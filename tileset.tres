@@ -1,6 +1,7 @@
 [gd_resource type="TileSet" load_steps=5 format=2]
 
-[ext_resource path="res://isotiles.png" type="Texture" id=1]
+[ext_resource path="res://images/isotiles.png" type="Texture" id=1]
+
 
 [sub_resource type="ConvexPolygonShape2D" id=1]
 points = PoolVector2Array( -4, -30, 60, 2, -4, 34, -68, 2 )

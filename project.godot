@@ -16,8 +16,8 @@ _global_script_class_icons={
 [application]
 
 config/name="GameDesignFall2019"
-run/main_scene="res://dungeon.tscn"
-config/icon="res://icon.png"
+run/main_scene="res://scenes/dungeon.tscn"
+config/icon="res://images/icon.png"
 
 [input]
 

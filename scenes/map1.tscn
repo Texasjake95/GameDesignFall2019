@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://scenes/troll.tscn" type="PackedScene" id=1]
+
+
+[node name="map1" type="Node2D"]
+
+[node name="floor" type="TileMap" parent="."]
+mode = 1
+cell_size = Vector2( 128, 64 )
+
+[node name="walls" type="TileMap" parent="."]
+mode = 1
+cell_size = Vector2( 128, 64 )
+
+[node name="troll" parent="walls" instance=ExtResource( 1 )]
