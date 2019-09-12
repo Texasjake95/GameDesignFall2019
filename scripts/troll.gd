@@ -21,4 +21,8 @@ func _physics_process(delta):
 	
 	motion = motion.normalized() * MOTION_SPEED
 
-	move_and_slide(motion)
+	var collision_info = move_and_collide(motion * delta)
+	if collision_info:
+		if collision_info.collider is Item:
+			collision_info.collider.remove()
+
