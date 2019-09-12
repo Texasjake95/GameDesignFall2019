@@ -23,7 +23,7 @@ func _physics_process(delta):
 	
 	motion = motion.normalized() * MOTION_SPEED
 
-	collision_manager.moveAndCollide(self, motion, delta)
+	collision_manager.moveAndSlide(self, motion)
 
 	#var collision_info = move_and_collide(motion * delta)
 	#if collision_info:
