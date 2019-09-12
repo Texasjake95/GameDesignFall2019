@@ -1,4 +1,6 @@
-extends KinematicBody2D
+extends Entity_Base
+
+class_name Player
 
 # This is a demo showing how KinematicBody2D
 # move_and_slide works.
@@ -21,8 +23,10 @@ func _physics_process(delta):
 	
 	motion = motion.normalized() * MOTION_SPEED
 
-	var collision_info = move_and_collide(motion * delta)
-	if collision_info:
-		if collision_info.collider is Item:
-			collision_info.collider.remove()
+	collision_manager.moveAndCollide(self, motion, delta)
+
+	#var collision_info = move_and_collide(motion * delta)
+	#if collision_info:
+		#if collision_info.collider is Item:
+			#collision_info.collider.remove()
 

@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://scenes/dungeon.tscn" type="PackedScene" id=1]
 [ext_resource path="res://entity/test_entity.tscn" type="PackedScene" id=2]
+[ext_resource path="res://entity/test_entity2.tscn" type="PackedScene" id=3]
 
 [node name="map1" type="Node2D"]
 
@@ -20,8 +21,13 @@ collision_layer = 3
 collision_mask = 3
 
 [node name="KinematicBody2D" parent="dungeon/walls" index="1" instance=ExtResource( 2 )]
-position = Vector2( 1373.7, -444.766 )
+position = Vector2( 679.584, -86.6402 )
+
+[node name="KinematicBody2D2" parent="dungeon/walls" index="2" instance=ExtResource( 3 )]
+position = Vector2( 822.108, -106.316 )
+
+[node name="KinematicBody2D3" parent="dungeon/walls" index="3" instance=ExtResource( 3 )]
+position = Vector2( 654.739, 36.8422 )
+script = null
 
 [editable path="dungeon"]
-
-[editable path="dungeon/walls/KinematicBody2D"]

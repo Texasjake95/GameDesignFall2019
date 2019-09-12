@@ -1,6 +1,6 @@
-extends Entity_Base
+extends KinematicBody2D
 
-class_name Item
+class_name Entity_Base
 
 # Declare member variables here. Examples:
 # var a = 2
@@ -8,12 +8,12 @@ class_name Item
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	print("HELLO FROM ITEM")
+	pass # Replace with function body.
 
 
+func handleCollision(collisionData):
+	pass
 
-func remove():
-	get_parent().remove_child(self)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

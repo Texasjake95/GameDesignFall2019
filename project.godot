@@ -10,12 +10,30 @@ config_version=4
 
 _global_script_classes=[ {
 "base": "KinematicBody2D",
+"class": "Entity_Base",
+"language": "GDScript",
+"path": "res://entity/base_entity.gd"
+}, {
+"base": "Entity_Base",
 "class": "Item",
 "language": "GDScript",
 "path": "res://scripts/item.gd"
+}, {
+"base": "Item",
+"class": "Item2",
+"language": "GDScript",
+"path": "res://scripts/item2.gd"
+}, {
+"base": "Entity_Base",
+"class": "Player",
+"language": "GDScript",
+"path": "res://scripts/troll.gd"
 } ]
 _global_script_class_icons={
-"Item": ""
+"Entity_Base": "",
+"Item": "",
+"Item2": "",
+"Player": ""
 }
 
 [application]
@@ -23,6 +41,10 @@ _global_script_class_icons={
 config/name="GameDesignFall2019"
 run/main_scene="res://scenes/dungeon.tscn"
 config/icon="res://images/icon.png"
+
+[autoload]
+
+collision_manager="*res://collision_manager.gd"
 
 [input]
 
