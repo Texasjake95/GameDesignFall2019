@@ -31,7 +31,7 @@ func moveAndSlide(entity : KinematicBody2D, velocity : Vector2, floor_normal : V
 func _check(node):
 	return not is_instance_valid(node) || node.is_queued_for_deletion()
 
-func _handleCollision(entity1, entity2, collisionData : KinematicCollision2D):
+func _handleCollision(entity1 : KinematicBody2D, entity2 : KinematicBody2D, collisionData : KinematicCollision2D):
 	
 	if not entity1 || not entity2:
 		return
