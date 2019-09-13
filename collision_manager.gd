@@ -2,7 +2,7 @@ extends Node2D
 
 const collisionMappping = Dictionary()
 
-func _addMapping(clazz1, clazz2, function : FuncRef):
+static func addMapping(clazz1, clazz2, function : FuncRef):
 
 	var key = [clazz1, clazz2]
 	
@@ -65,9 +65,9 @@ func _handleCollision(entity1, entity2, collisionData : KinematicCollision2D):
 	function.call_func(entity1, entity2, collisionData)
 
 func _ready():	
-	_addMapping(TileMap, Player, funcref(self, "_playerTileHandle"))
-	_addMapping(Item2, Player, funcref(self,"_playerItemHandle2"))
-	_addMapping(Item, Player, funcref(self,"_playerItemHandle"))
+	addMapping(TileMap, KinematicBody2D, funcref(self, "_playerTileHandle"))
+	addMapping(Item2, Player, funcref(self,"_playerItemHandle2"))
+	addMapping(Item, Player, funcref(self,"_playerItemHandle"))
 
 func getType(node):
 		
@@ -82,8 +82,16 @@ func getType(node):
 	return ret
 
 func _playerTileHandle(entity1, entity2, collisionData : KinematicCollision2D):
-	#TODO call an external script to handle TileMap Entity interaction
-	print("TILE HANDLED")
+	
+	if not entity1 is KinematicBody2D || not entity2 is TileMap:
+		return
+	
+	var entity : KinematicBody2D = entity1
+	var tileMap : TileMap = entity2
+	
+	var tileData = tile_manager.newData(entity, tileMap, collisionData)
+	
+	tile_manager.handleCollision(entity, tileData, collisionData)
 	
 
 func _playerItemHandle2(entity1, entity2, collisionData : KinematicCollision2D):
@@ -92,7 +100,6 @@ func _playerItemHandle2(entity1, entity2, collisionData : KinematicCollision2D):
 		return
 
 	var item : Item2 = entity2
-	var player : Player = entity1
 	
 	print("NEW HANDLE")
 	
@@ -104,6 +111,8 @@ func _playerItemHandle(entity1, entity2, collisionData : KinematicCollision2D):
 		return
 
 	var item : Item = entity2
-	var player : Player = entity1
 	
 	item.remove()
+	
+	
+	

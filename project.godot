@@ -45,6 +45,7 @@ config/icon="res://images/icon.png"
 [autoload]
 
 collision_manager="*res://collision_manager.gd"
+tile_manager="*res://tile_manager.gd"
 
 [input]
 
