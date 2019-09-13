@@ -13,7 +13,7 @@ func _ready():
 
 
 func remove():
-	get_parent().remove_child(self)
+	queue_free() # ONLY DO THIS IF ALL NODE (CHILDREN INCLUDED) NEED TO BE DELETED
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

@@ -8,21 +8,29 @@ func _addMapping(clazz1, clazz2, function : String):
 	
 	if not collisionMappping.has(key):
 		collisionMappping[key] = function
+		
 
-func moveAndCollide(entity : Entity_Base, velocity : Vector2, delta):
+# See docs for KinematicBody2D:move_and_collide 
+func moveAndCollide(entity : KinematicBody2D, velocity : Vector2, delta,
+		infinite_inertia : bool =true, exclude_raycast_shapes : bool =true, test_only : bool =false):
 	
-	var collision_info = entity.move_and_collide(velocity * delta)
+	var collision_info = entity.move_and_collide(velocity * delta, infinite_inertia, exclude_raycast_shapes, test_only)
 	if collision_info:
 		_handleCollision(entity, collision_info.collider, collision_info)
-		
-func moveAndSlide(entity : Entity_Base, velocity : Vector2):
 
-	entity.move_and_slide(velocity)
+# See docs for KinematicBody2D:move_and_slide 
+func moveAndSlide(entity : KinematicBody2D, velocity : Vector2, floor_normal : Vector2 = Vector2( 0, 0 ),
+		stop_on_slope : bool = false, max_slides : int =4 , floor_max_angle : float =0.785398, 
+		infinite_inertia : bool =true):
+
+	entity.move_and_slide(velocity, floor_normal, stop_on_slope, max_slides, floor_max_angle, infinite_inertia)
 	for i in entity.get_slide_count():
 		var collision_info = entity.get_slide_collision(i)
 		_handleCollision(entity, collision_info.collider, collision_info)
 
-		
+func _check(node):
+	return not is_instance_valid(node) || node.is_queued_for_deletion()
+
 func _handleCollision(entity1, entity2, collisionData : KinematicCollision2D):
 	
 	if not entity1 || not entity2:
@@ -30,7 +38,7 @@ func _handleCollision(entity1, entity2, collisionData : KinematicCollision2D):
 	
 	# Sometimes moveAndSlide does the same node several times if it was removed
 	# at any point do not interact again
-	if not is_instance_valid(entity1) || not is_instance_valid(entity2):
+	if _check(entity1) || _check(entity2):
 		return
 	
 	var functionName = null
@@ -73,12 +81,12 @@ func getType(node):
 	ret = typeof(node)
 	return ret
 
-func _playerTileHandle(entity1 : Entity_Base, entity2 : Entity_Base, collisionData : KinematicCollision2D):
+func _playerTileHandle(entity1 : KinematicBody2D, entity2 : KinematicBody2D, collisionData : KinematicCollision2D):
 	#TODO call an external script to handle TileMap Entity interaction
 	print("TILE HANDLED")
 	
 
-func _playerItemHandle2(entity1 : Entity_Base, entity2 : Entity_Base, collisionData : KinematicCollision2D):
+func _playerItemHandle2(entity1 : KinematicBody2D, entity2 : KinematicBody2D, collisionData : KinematicCollision2D):
 
 	if not entity1 is Player || not entity2 is Item2:
 		return
@@ -90,7 +98,7 @@ func _playerItemHandle2(entity1 : Entity_Base, entity2 : Entity_Base, collisionD
 	
 	item.remove()
 
-func _playerItemHandle(entity1 : Entity_Base, entity2 : Entity_Base, collisionData : KinematicCollision2D):
+func _playerItemHandle(entity1 : KinematicBody2D, entity2 : KinematicBody2D, collisionData : KinematicCollision2D):
 
 	if not entity1 is Player || not entity2 is Item:
 		return
