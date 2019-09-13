@@ -2,7 +2,7 @@ extends Node2D
 
 const collisionMappping = Dictionary()
 
-func _addMapping(clazz1, clazz2, function : String):
+func _addMapping(clazz1, clazz2, function : FuncRef):
 
 	var key = [clazz1, clazz2]
 	
@@ -31,7 +31,7 @@ func moveAndSlide(entity : KinematicBody2D, velocity : Vector2, floor_normal : V
 func _check(node):
 	return not is_instance_valid(node) || node.is_queued_for_deletion()
 
-func _handleCollision(entity1 : KinematicBody2D, entity2 : KinematicBody2D, collisionData : KinematicCollision2D):
+func _handleCollision(entity1, entity2, collisionData : KinematicCollision2D):
 	
 	if not entity1 || not entity2:
 		return
@@ -41,7 +41,7 @@ func _handleCollision(entity1 : KinematicBody2D, entity2 : KinematicBody2D, coll
 	if _check(entity1) || _check(entity2):
 		return
 	
-	var functionName = null
+	var function = null
 	
 	for key in collisionMappping:
 		
@@ -56,18 +56,18 @@ func _handleCollision(entity1 : KinematicBody2D, entity2 : KinematicBody2D, coll
 				entity2Valid = true	
 		
 		if entity1Valid and entity2Valid:
-			functionName = collisionMappping.get(key)
+			function = collisionMappping.get(key)
 			break
 	
-	if not functionName:
+	if not function:
 		return
 	
-	call(functionName, entity1, entity2, collisionData)
+	function.call_func(entity1, entity2, collisionData)
 
 func _ready():	
-	_addMapping(TileMap, Player, "_playerTileHandle")
-	_addMapping(Item2, Player, "_playerItemHandle2")
-	_addMapping(Item, Player, "_playerItemHandle")
+	_addMapping(TileMap, Player, funcref(self, "_playerTileHandle"))
+	_addMapping(Item2, Player, funcref(self,"_playerItemHandle2"))
+	_addMapping(Item, Player, funcref(self,"_playerItemHandle"))
 
 func getType(node):
 		
@@ -81,12 +81,12 @@ func getType(node):
 	ret = typeof(node)
 	return ret
 
-func _playerTileHandle(entity1 : KinematicBody2D, entity2 : KinematicBody2D, collisionData : KinematicCollision2D):
+func _playerTileHandle(entity1, entity2, collisionData : KinematicCollision2D):
 	#TODO call an external script to handle TileMap Entity interaction
 	print("TILE HANDLED")
 	
 
-func _playerItemHandle2(entity1 : KinematicBody2D, entity2 : KinematicBody2D, collisionData : KinematicCollision2D):
+func _playerItemHandle2(entity1, entity2, collisionData : KinematicCollision2D):
 
 	if not entity1 is Player || not entity2 is Item2:
 		return
@@ -98,7 +98,7 @@ func _playerItemHandle2(entity1 : KinematicBody2D, entity2 : KinematicBody2D, co
 	
 	item.remove()
 
-func _playerItemHandle(entity1 : KinematicBody2D, entity2 : KinematicBody2D, collisionData : KinematicCollision2D):
+func _playerItemHandle(entity1, entity2, collisionData : KinematicCollision2D):
 
 	if not entity1 is Player || not entity2 is Item:
 		return
