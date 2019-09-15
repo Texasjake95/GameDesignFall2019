@@ -10,12 +10,11 @@ func _ready():
 	
 	for x in range(-1, 2):
 		for y in range(-1, 2):
-			if x == 0 and y == 0:
-				continue
 			validDirs.push_back(Vector2(x, y))
 	
 	print(validDirs)
 	addMapping(KinematicBody2D, "wall", funcref(self, "wallHandle"))
+	addMapping(KinematicBody2D, "column", funcref(self, "wallHandle"))
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -39,15 +38,15 @@ static func addMapping(clazz1, clazz2, function : FuncRef):
 func _check(node):
 	return not is_instance_valid(node) || node.is_queued_for_deletion()
 	
-func handleCollision(entity, tile: TileData, collisionData : KinematicCollision2D):
+func handleCollision(entity, tile: TileData, collisionData : KinematicCollision2D) -> bool:
 	
 	if not entity || not tile:
-		return
-	
+		return false
+	 
 	# Sometimes moveAndSlide does the same node several times if it was removed
 	# at any point do not interact again
-	if _check(entity) || tile.isValid():
-		return
+	if _check(entity) || tile.notValid():
+		return false
 	
 	var function = null
 	
@@ -69,16 +68,16 @@ func handleCollision(entity, tile: TileData, collisionData : KinematicCollision2
 			break
 	
 	if not function:
-		return
+		return false
 	
 	function.call_func(entity, tile, collisionData)
-
+	return true
 
 	
 func newData(entity, tileMap: TileMap, collisionData : KinematicCollision2D):
 	var ret = TileData.new()
 	
-	var entPos = entity.position
+	var entPos = collisionData.position
 	var currentTile = tileMap.world_to_map(entPos)
 	
 	var dist = tileMap.cell_size.length_squared() * 1000
@@ -88,7 +87,9 @@ func newData(entity, tileMap: TileMap, collisionData : KinematicCollision2D):
 		
 		var tilePos = currentTile + v
 		
-		if tileMap.get_cellv(tilePos) == -1:
+		var tileID = tileMap.get_cellv(tilePos)
+		
+		if tileID == -1:
 			continue
 		
 		var dirTile = tileMap.map_to_world(currentTile + v)
@@ -123,8 +124,8 @@ class TileData:
 	func setCell(newID: int):
 		self.tileMap.set_cellv(tilePos, newID)
 	
-	func isValid():
+	func notValid():
 		return self.tileID == -1
 	
 	func sameTile(other):
-		return other == tileName	
+		return other == tileName
