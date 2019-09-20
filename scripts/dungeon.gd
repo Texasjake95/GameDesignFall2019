@@ -7,7 +7,6 @@ extends Node2D
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	randomize()
-
 	
 	var time_before = OS.get_ticks_usec()
 	
@@ -25,7 +24,7 @@ func _ready():
 		for y in range(-14, 5):
 			
 			var floorCell = randi() % validFloorCells.size()
-
+			
 			if floors.get_cell(x, y) == -1:
 				floors.set_cell(x, y, validFloorCells[floorCell])
 			

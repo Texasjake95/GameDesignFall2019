@@ -16,7 +16,6 @@ func _ready():
 	addMapping(KinematicBody2D, "wall", funcref(self, "wallHandle"))
 	addMapping(KinematicBody2D, "column", funcref(self, "wallHandle"))
 
-
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass
@@ -61,7 +60,6 @@ func handleCollision(entity, tile: TileData, collisionData : KinematicCollision2
 				entity2Valid = tile.sameTile(type)
 			elif entity is type:
 				entity1Valid = true
-
 		
 		if entity1Valid and entity2Valid:
 			function = collisionMappping.get(key)
@@ -76,28 +74,7 @@ func handleCollision(entity, tile: TileData, collisionData : KinematicCollision2
 	
 func newData(entity, tileMap: TileMap, collisionData : KinematicCollision2D):
 	var ret = TileData.new()
-	
-	var entPos = collisionData.position
-	var currentTile = tileMap.world_to_map(entPos)
-	
-	var dist = tileMap.cell_size.length_squared() * 1000
-	var tile = Vector2(0,0)
-	
-	for v in validDirs:
-		
-		var tilePos = currentTile + v
-		
-		var tileID = tileMap.get_cellv(tilePos)
-		
-		if tileID == -1:
-			continue
-		
-		var dirTile = tileMap.map_to_world(currentTile + v)
-		if dirTile.distance_squared_to (entPos) < dist:
-			dist = dirTile.distance_squared_to (entPos)
-			tile = v
-
-	ret.init_pos(tileMap, currentTile + tile)
+	ret.init(tileMap, collisionData)
 	return ret;
 	
 class TileData:
@@ -108,9 +85,28 @@ class TileData:
 	var tileName : String
 	
 	func init(tileMap: TileMap, collisionData : KinematicCollision2D):
-		var tilePos = tileMap.world_to_map(collisionData.position)
-		tilePos -= collisionData.normal
-		init_pos(tileMap, tilePos)
+		
+		var entPos = collisionData.position
+		var currentTile = tileMap.world_to_map(entPos)
+		
+		var dist = tileMap.cell_size.length_squared() * 1000
+		var tile = Vector2(0,0)
+		
+		for v in tile_manager.validDirs:
+			
+			var tilePos = currentTile + v
+			
+			var tileID = tileMap.get_cellv(tilePos)
+			
+			if tileID == -1:
+				continue
+			
+			var dirTile = tileMap.map_to_world(currentTile + v)
+			if dirTile.distance_squared_to(entPos) < dist:
+				dist = dirTile.distance_squared_to(entPos)
+				tile = v
+		
+		init_pos(tileMap, currentTile + tile)
 	
 	func init_pos(tileMap: TileMap, tilePos : Vector2):
 		self.tileMap = tileMap

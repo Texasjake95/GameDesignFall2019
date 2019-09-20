@@ -2,6 +2,12 @@ extends Node2D
 
 const collisionMappping = Dictionary()
 
+func _ready():	
+	addMapping(TileMap, KinematicBody2D, funcref(self, "_playerTileHandle"))
+	addMapping(Item2, Player, funcref(self,"_playerItemHandle2"))
+	addMapping(Item, Player, funcref(self,"_playerItemHandle"))
+	
+	
 static func addMapping(clazz1, clazz2, function : FuncRef):
 
 	var key = [clazz1, clazz2]
@@ -65,10 +71,6 @@ func _handleCollision(entity1, entity2, collisionData : KinematicCollision2D) ->
 	
 	return function.call_func(entity1, entity2, collisionData)
 
-func _ready():	
-	addMapping(TileMap, KinematicBody2D, funcref(self, "_playerTileHandle"))
-	addMapping(Item2, Player, funcref(self,"_playerItemHandle2"))
-	addMapping(Item, Player, funcref(self,"_playerItemHandle"))
 
 func getType(node):
 		
