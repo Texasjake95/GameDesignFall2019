@@ -30,7 +30,7 @@ func reset():
 	conditions.clear()
 
 func hasWon() -> bool:
-	var ret : bool = win_conditions.size() > 1
+	var ret : bool = win_conditions.size() > 0
 	
 	for condition in win_conditions:
 		if not condition.condition():
