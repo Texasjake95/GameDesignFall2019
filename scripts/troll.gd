@@ -25,6 +25,10 @@ func _physics_process(delta):
 
 	collision_manager.moveAndSlide(self, motion)
 
+	if game_conditions.hasWon():
+		print("I HAVE WON")
+		game_conditions.reset()
+
 	#var collision_info = move_and_collide(motion * delta)
 	#if collision_info:
 		#if collision_info.collider is Item:
