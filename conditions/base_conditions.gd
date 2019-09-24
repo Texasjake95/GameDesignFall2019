@@ -2,6 +2,8 @@ extends Node
 
 class_name BaseCondition
 
+signal condition
+
 func _ready():
 
 	var type = conditionType()
@@ -10,6 +12,8 @@ func _ready():
 	else:
 		game_conditions.addLoseCondition(self)
 	
+func fireEvent():
+	emit_signal("condition", self)
 
 func conditionType():
 	pass

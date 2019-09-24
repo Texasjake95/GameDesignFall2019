@@ -5,6 +5,9 @@ class_name Player
 # This is a demo showing how KinematicBody2D
 # move_and_slide works.
 
+func _ready():
+	game_conditions.connect("winSignal", self, "_OnWin")
+
 # Member variables
 const MOTION_SPEED = 160 # Pixels/second
 
@@ -24,13 +27,12 @@ func _physics_process(delta):
 	motion = motion.normalized() * MOTION_SPEED
 
 	collision_manager.moveAndSlide(self, motion)
-
-	if game_conditions.hasWon():
-		print("I HAVE WON")
-		game_conditions.reset()
-
+		
 	#var collision_info = move_and_collide(motion * delta)
 	#if collision_info:
 		#if collision_info.collider is Item:
 			#collision_info.collider.remove()
 
+func _OnWin():
+	print("I HAVE WON")
+	game_conditions.reset()

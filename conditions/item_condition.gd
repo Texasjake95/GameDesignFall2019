@@ -12,6 +12,8 @@ func removeItem(item):
 	print("Removing ITEM")
 	var index = items.find(item)
 	items.remove(index)
+	if condition():
+		fireEvent()
 	
 func noItems():
 	return not items.size() > 0
