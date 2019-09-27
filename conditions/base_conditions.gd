@@ -10,12 +10,15 @@ func _ready():
 		game_conditions.addWinCondition(self)
 	else:
 		game_conditions.addLoseCondition(self)
-	
+
+#Fire condition met
 func fireEvent():
 	emit_signal("condition_signal", self)
 
+#Override this in subclass
 func conditionType():
 	pass
-
+	
+#Override this in subclass
 func condition():
 	pass
