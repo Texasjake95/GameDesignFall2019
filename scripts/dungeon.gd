@@ -4,6 +4,8 @@ extends Node2D
 # var a = 2
 # var b = "text"
 
+const MOTION_SPEED = 160 # Pixels/second
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	randomize()

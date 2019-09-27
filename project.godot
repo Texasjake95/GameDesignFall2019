@@ -9,6 +9,11 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "Entity_Base",
+"class": "Bullet",
+"language": "GDScript",
+"path": "res://scripts/bullet.gd"
+}, {
 "base": "KinematicBody2D",
 "class": "Entity_Base",
 "language": "GDScript",
@@ -30,6 +35,7 @@ _global_script_classes=[ {
 "path": "res://scripts/troll.gd"
 } ]
 _global_script_class_icons={
+"Bullet": "",
 "Entity_Base": "",
 "Item": "",
 "Item2": "",
