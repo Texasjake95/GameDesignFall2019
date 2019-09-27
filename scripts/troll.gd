@@ -7,7 +7,7 @@ class_name Player
 
 func _ready():
 	game_conditions.connect("winSignal", self, "_OnWin")
-
+	game_conditions.connect("loseSingal", self, "_OnLose")
 # Member variables
 const MOTION_SPEED = 160 # Pixels/second
 
@@ -33,6 +33,19 @@ func _physics_process(delta):
 		#if collision_info.collider is Item:
 			#collision_info.collider.remove()
 
+var hasWon = false
+var hasLost = false
+
 func _OnWin():
+	if hasLost and not hasWon:
+		return
+	hasWon = true
 	print("I HAVE WON")
+	game_conditions.reset()
+	
+func _OnLose():
+	if hasWon and not hasLost:
+		return
+	hasLost = true
+	print("I HAVE LOST")
 	game_conditions.reset()

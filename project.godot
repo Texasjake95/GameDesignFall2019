@@ -38,6 +38,11 @@ _global_script_classes=[ {
 "class": "Player",
 "language": "GDScript",
 "path": "res://scripts/troll.gd"
+}, {
+"base": "BaseCondition",
+"class": "TimerCondition",
+"language": "GDScript",
+"path": "res://conditions/timer_condition.gd"
 } ]
 _global_script_class_icons={
 "BaseCondition": "",
@@ -45,7 +50,8 @@ _global_script_class_icons={
 "Item": "",
 "Item2": "",
 "ItemCondition": "",
-"Player": ""
+"Player": "",
+"TimerCondition": ""
 }
 
 [application]

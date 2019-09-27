@@ -27,7 +27,7 @@ func addLoseCondition(condition : BaseCondition):
 	_registerCondition(condition)
 	#Don't need to special case lose because if one
 	#is true game over
-	condition.connect("condition_signal", self, "_loseSignal")
+	condition.connect("condition_signal", self, "loseSignal")
 
 func _checkWin(condition : BaseCondition):	
 	#Need to figure out a way to make this faster

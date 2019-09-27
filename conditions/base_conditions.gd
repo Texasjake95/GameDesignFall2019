@@ -5,7 +5,6 @@ class_name BaseCondition
 signal condition_signal
 
 func _ready():
-
 	var type = conditionType()
 	if type == "win":
 		game_conditions.addWinCondition(self)
