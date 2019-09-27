@@ -21,24 +21,24 @@ func _registerCondition(condition : BaseCondition):
 func addWinCondition(condition : BaseCondition):
 	_registerCondition(condition)
 	win_conditions.push_back(condition)
-	condition.connect("condition", self, "_checkWin")
+	condition.connect("condition_signal", self, "_checkWin")
 	
 func addLoseCondition(condition : BaseCondition):
 	_registerCondition(condition)
 	#Don't need to special case lose because if one
 	#is true game over
-	condition.connect("condition", self, "_loseSignal")
+	condition.connect("condition_signal", self, "_loseSignal")
 
 func _checkWin(condition : BaseCondition):	
 	#Need to figure out a way to make this faster
 	var ret : bool = win_conditions.size() > 0
-	
+
 	for condition in win_conditions:
 		if not condition.condition():
 			ret = false
 			break
 	
-	if win_conditions.size() == 0:
+	if ret:
 		emit_signal("winSignal")
 
 func loseSignal(condition : BaseCondition):

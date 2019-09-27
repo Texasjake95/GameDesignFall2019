@@ -10,7 +10,6 @@ var itemCondition : ItemCondition
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	print("HELLO FROM ITEM")
 	itemCondition = game_conditions.findByType(ItemCondition)
 	
 	if itemCondition != null:

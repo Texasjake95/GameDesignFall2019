@@ -2,7 +2,7 @@ extends Node
 
 class_name BaseCondition
 
-signal condition
+signal condition_signal
 
 func _ready():
 
@@ -13,7 +13,7 @@ func _ready():
 		game_conditions.addLoseCondition(self)
 	
 func fireEvent():
-	emit_signal("condition", self)
+	emit_signal("condition_signal", self)
 
 func conditionType():
 	pass
