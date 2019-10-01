@@ -11,7 +11,7 @@ const MOTION_SPEED = 160 # Pixels/second
 func _input(event):
 	if event is InputEventMouseButton:
 		if event.is_pressed() and not event.is_doubleclick():
-			Bullet.fireBulletPlayer(self, Vector2(0,0))
+			Bullet.fireBulletPlayer(self, get_global_mouse_position())
 
 func _physics_process(delta):
 	var motion = Vector2()

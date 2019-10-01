@@ -31,7 +31,9 @@ static func fireBullet(firingEntity, direction, numberOfBullets=1):
 
 static func fireBulletPlayer(playerEntity, mousePos : Vector2, numberOfBullets=1):
 	#See if this is right
-	var direction = playerEntity.position - mousePos
+	print(mousePos)	
+	print(playerEntity.position)
+	var direction = mousePos - playerEntity.position
 	fireBullet(playerEntity, direction, numberOfBullets)
 	pass
 
@@ -56,8 +58,11 @@ func init(firingEntity, direction):
 	self.direction = direction.normalized()
 
 func onHit(hitEntity=null) -> bool:
-	if hitEntity == firingEntity or get_class() == hitEntity.get_class() :
-		return false
+	
+	if hitEntity != null:
+	
+		if hitEntity == firingEntity or get_class() == hitEntity.get_class() :
+			return false
 	
 	queue_free() # ONLY DO THIS IF ALL NODE (CHILDREN INCLUDED) NEED TO BE DELETED
 	

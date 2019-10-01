@@ -13,8 +13,13 @@ func _ready():
 			validDirs.push_back(Vector2(x, y))
 	
 	print(validDirs)
+	addMapping(Bullet, "wall", funcref(self, "bulletHandle"))
 	addMapping(KinematicBody2D, "wall", funcref(self, "wallHandle"))
 	addMapping(KinematicBody2D, "column", funcref(self, "wallHandle"))
+
+
+func bulletHandle(entity : Bullet, tileData: TileData, collisionData : KinematicCollision2D):
+	entity.onHit()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
