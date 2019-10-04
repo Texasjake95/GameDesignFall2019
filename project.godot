@@ -9,6 +9,11 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "Node",
+"class": "BaseCollisionManager",
+"language": "GDScript",
+"path": "res://base_collision_manager.gd"
+}, {
 "base": "KinematicBody2D",
 "class": "Entity_Base",
 "language": "GDScript",
@@ -30,6 +35,7 @@ _global_script_classes=[ {
 "path": "res://scripts/troll.gd"
 } ]
 _global_script_class_icons={
+"BaseCollisionManager": "",
 "Entity_Base": "",
 "Item": "",
 "Item2": "",

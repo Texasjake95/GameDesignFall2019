@@ -1,7 +1,6 @@
 extends BaseCollisionManager
 
 func _ready():	
-	addMapping(Node2D, Bullet, funcref(self, "_handleBullet"))	
 	addMapping(TileMap, KinematicBody2D, funcref(self, "_playerTileHandle"))
 	addMapping(Item2, Player, funcref(self,"_playerItemHandle2"))
 	addMapping(Item, Player, funcref(self,"_playerItemHandle"))
@@ -71,18 +70,3 @@ func _playerItemHandle(entity1, entity2, collisionData : KinematicCollision2D) -
 	
 	item.remove()
 	return true
-	
-func _handleBullet(entity1, entity2, collisionData : KinematicCollision2D) -> bool:
-	
-	if not entity1 is Bullet:
-		return false
-	
-	var hitEntity = null
-	
-	#Can't process damage TileMap with regular bullets	
-	if not entity2 is TileMap:
-		hitEntity = entity2
-	
-	var bullet : Bullet = entity1
-	
-	return bullet.onHit(hitEntity)
