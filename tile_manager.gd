@@ -13,13 +13,9 @@ func _ready():
 			validDirs.push_back(Vector2(x, y))
 	
 	print(validDirs)
-	addMapping(Bullet, "wall", funcref(self, "bulletHandle"))
 	addMapping(KinematicBody2D, "wall", funcref(self, "wallHandle"))
 	addMapping(KinematicBody2D, "column", funcref(self, "wallHandle"))
 
-
-func bulletHandle(entity : Bullet, tileData: TileData, collisionData : KinematicCollision2D):
-	entity.onHit()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
@@ -56,17 +52,17 @@ func handleCollision(entity, tile: TileData, collisionData : KinematicCollision2
 	
 	for key in collisionMappping:
 		
-		var entity1Valid = false
-		var entity2Valid = false
+		var tileType = ""
+		var entityType = null
 		
-		for type in key:
-			
-			if type is String:
-				entity2Valid = tile.sameTile(type)
-			elif entity is type:
-				entity1Valid = true
+		if key[0] is String:
+			tileType = key[0]
+			entityType = key[1]
+		else:
+			tileType = key[1]
+			entityType = key[0]
 		
-		if entity1Valid and entity2Valid:
+		if tile.sameTile(tileType) and entity is entityType:
 			function = collisionMappping.get(key)
 			break
 	

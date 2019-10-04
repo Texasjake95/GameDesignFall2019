@@ -60,12 +60,12 @@ func init(firingEntity, direction):
 func onHit(hitEntity=null) -> bool:
 	
 	if hitEntity != null:
-	
 		if hitEntity == firingEntity or get_class() == hitEntity.get_class() :
 			return false
-	
+
 	queue_free() # ONLY DO THIS IF ALL NODE (CHILDREN INCLUDED) NEED TO BE DELETED
 	
+	#TODO move this in to above null checks
 	if hitEntity != null && hitEntity is Entity_Base:
 		pass
 	return true

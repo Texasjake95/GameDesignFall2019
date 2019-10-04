@@ -3,10 +3,10 @@ extends Node2D
 const collisionMappping = Dictionary()
 
 func _ready():	
+	addMapping(Node2D, Bullet, funcref(self, "_handleBullet"))	
 	addMapping(TileMap, KinematicBody2D, funcref(self, "_playerTileHandle"))
 	addMapping(Item2, Player, funcref(self,"_playerItemHandle2"))
 	addMapping(Item, Player, funcref(self,"_playerItemHandle"))
-	
 	
 static func addMapping(clazz1, clazz2, function : FuncRef):
 
@@ -52,17 +52,14 @@ func _handleCollision(entity1, entity2, collisionData : KinematicCollision2D) ->
 	
 	for key in collisionMappping:
 		
-		var entity1Valid = false
-		var entity2Valid = false
+		var validTypes = false
 		
-		for type in key:
-			
-			if entity1 is type:
-				entity1Valid = true
-			elif entity2 is type:
-				entity2Valid = true	
+		if entity1 is key[0] and entity2 is key[1]:
+			validTypes = true
+		elif entity2 is key[0] and entity1 is key[1]:
+			validTypes = true
 		
-		if entity1Valid and entity2Valid:
+		if validTypes:
 			function = collisionMappping.get(key)
 			break
 	
@@ -119,3 +116,17 @@ func _playerItemHandle(entity1, entity2, collisionData : KinematicCollision2D) -
 	item.remove()
 	return true
 	
+func _handleBullet(entity1, entity2, collisionData : KinematicCollision2D) -> bool:
+	
+	if not entity1 is Bullet:
+		return false
+	
+	var hitEntity = null
+	
+	#Can't process damage TileMap with regular bullets	
+	if not entity2 is TileMap:
+		hitEntity = entity2
+	
+	var bullet : Bullet = entity1
+	
+	return bullet.onHit(hitEntity)
