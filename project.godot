@@ -46,6 +46,7 @@ config/icon="res://images/icon.png"
 
 collision_manager="*res://collision_manager.gd"
 tile_manager="*res://tile_manager.gd"
+room_manager="*res://room_manager.gd"
 
 [input]
 
