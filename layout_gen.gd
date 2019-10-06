@@ -102,7 +102,7 @@ func generate_layout(layout : Layout):
 	var sizeY = 1
 	var neededRooms = Dictionary()
 	
-
+	var time_before = OS.get_ticks_usec()
 	_set_room(map, Vector2(0, 0), roomTypes[_get_random(layout.roomGroups["START"])], neededRooms)
 	
 	while neededRooms.size() > 0:
@@ -118,7 +118,7 @@ func generate_layout(layout : Layout):
 		
 		if sizeX > layout.maxSize.x:
 			debug("Outside x check")
-			if pos.x < minX || maxX < pos.x:
+			if pos.x <= minX || maxX <= pos.x:
 				debug("TERMINAL")
 				if _try_terminal(map, pos, neededRooms):
 					set = true
@@ -126,7 +126,7 @@ func generate_layout(layout : Layout):
 		if not set:
 			if sizeY > layout.maxSize.y:
 				debug("Outside y check")
-				if pos.y < minY || maxY < pos.y:
+				if pos.y <= minY || maxY <= pos.y:
 					debug("TERMINAL")
 					if _try_terminal(map, pos, neededRooms):
 						set = true
@@ -148,8 +148,14 @@ func generate_layout(layout : Layout):
 		debug(str(Vector2(minX, minY)) + " " + str(Vector2(maxX, maxY)) + " " + str(Vector2(sizeX, sizeY)))
 		debug(neededRooms.size())
 		
+	var total_time = OS.get_ticks_usec() - time_before
 	print("DONE! SIZE: " + str(Vector2(sizeX, sizeY)))
 	print_layout(map, minX, maxX, minY, maxY)
+	
+
+	print("Time taken to generate: " + str(total_time) + "us")
+	print("Time taken to generate: " + str(total_time/1000) + "ms")
+	print("Time taken to generate: " + str(total_time/1000000) + "s")
 
 func _try_terminal(currentLayout: TileMap, pos: Vector2, toSet: Dictionary):
 	return _trySetArray(currentLayout, TERMINAL, pos, toSet, false)
