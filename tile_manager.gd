@@ -37,6 +37,8 @@ func _entities_valid(key, entity, tile):
 	var tileType = ""
 	var entityType = null
 	
+	#Find the string in the array 
+	#to compare the tile properly
 	if key[0] is String:
 		tileType = key[0]
 		entityType = key[1]

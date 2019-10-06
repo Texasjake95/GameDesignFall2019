@@ -11,6 +11,7 @@ var collisionMappping = Dictionary()
 func _ready():
 	pass # Replace with function body.
 
+#Add a handler for the given class-class collision
 func addMapping(clazz1, clazz2, function : FuncRef):
 	var key = [clazz1, clazz2]
 	if not collisionMappping.has(key):
