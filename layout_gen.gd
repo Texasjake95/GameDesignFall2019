@@ -18,13 +18,17 @@ const TERMINAL = [
 	"T_270_SHAPE"
 ]
 
+const DEBUG = false
+
+static func debug(message):
+	if DEBUG:
+		print(message)
+
 const HEX = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"]
 const UP_V = Vector2(0, -1)
 const DOWN_V = Vector2(0, 1)
 const RIGHT_V = Vector2(1, 0)
 const LEFT_V = Vector2(-1, 0)
-
-const AUTO_TILE = Vector2(100000000000, 100000000000)
 
 const roomTypes = Dictionary()
 const opcodeLookup = []
@@ -49,53 +53,8 @@ func _ready():
 	for value in roomTypes.values():
 		opcodeLookup[value.opcode] = value
 		print(opcodeLookup[value.opcode].name)
-	print("TEST")
-	test_grammar = load_layout("test3.json")
-	print("TEST")
-	
-	var map = TileMap.new()
-	map.set_cell(0,0,-1)
-	var neededRooms = Dictionary()
-	
-	_set_room(map, Vector2(0, 0), roomTypes["4_WAY"], neededRooms)
-	for x in range(-1, 2):
-		for y in range(-1, 2):
-			var v = Vector2(x,y)
-			
-			var room = "NONE"
-			var cell = map.get_cellv(v)
-			if cell != -1:
-				room = opcodeLookup[cell].name
-			
-			print(str(v) + " = " + room)
-	
-	_set_room(map, Vector2(1, 1), roomTypes["NONE"], neededRooms)
-	_set_room(map, Vector2(-1, 1), roomTypes["NONE"], neededRooms)
-	_set_room(map, Vector2(1, -1), roomTypes["NONE"], neededRooms)
-	_set_room(map, Vector2(-1, -1), roomTypes["NONE"], neededRooms)
 
-	if _can_room_exist(map, Vector2(0,0) + UP_V, roomTypes["DEAD_U"]):
-		_set_room(map, Vector2(0,0) + UP_V, roomTypes["DEAD_U"], neededRooms)
-		
-	if _can_room_exist(map, Vector2(0,0) + DOWN_V, roomTypes["DEAD_D"]):
-		_set_room(map, Vector2(0,0) + DOWN_V, roomTypes["DEAD_D"], neededRooms)
-		
-	if _can_room_exist(map, Vector2(0,0) + RIGHT_V, roomTypes["DEAD_R"]):
-		_set_room(map, Vector2(0,0) + RIGHT_V, roomTypes["DEAD_R"], neededRooms)
-		
-	if _can_room_exist(map, Vector2(0,0) + LEFT_V, roomTypes["DEAD_L"]):
-		_set_room(map, Vector2(0,0) + LEFT_V, roomTypes["DEAD_L"], neededRooms)
-	
-	for x in range(-1, 2):
-		for y in range(-1, 2):
-			var v = Vector2(x,y)
-			
-			var room = "NONE"
-			var cell = map.get_cellv(v)
-			if cell != -1:
-				room = opcodeLookup[cell].name
-			
-			print(str(v) + " = " + room)
+	test_grammar = load_layout("test3.json")
 	
 	generate_layout(test_grammar)
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -114,6 +73,23 @@ func load_layout(fileLoc):
 	layout.init(maxSize, roomGroups)
 	
 	return layout
+
+func print_layout(tileMap: TileMap, minX, maxX, minY, maxY):
+	for y in range(minY, maxY+1):
+		var toPrint = ""
+		for x in range(minX, maxX+1):
+			toPrint += _get_char(tileMap, x, y)
+		print(toPrint)
+
+func _get_char(map: TileMap, x, y):
+	var v = Vector2(x,y)
+	
+	var room = " "
+	var cell = map.get_cellv(v)
+	if cell != -1:
+		room = HEX[cell]
+	
+	return room
 
 func generate_layout(layout : Layout):
 	print("GENERATING")
@@ -137,27 +113,27 @@ func generate_layout(layout : Layout):
 		var group = neededRooms[pos]
 		
 		neededRooms.erase(pos)
-		print(neededRooms.size())
+		debug(neededRooms.size())
 		var set = false
 		
 		if sizeX > layout.maxSize.x:
-			print("Outside x check")
+			debug("Outside x check")
 			if pos.x < minX || maxX < pos.x:
-				print("TERMINAL")
+				debug("TERMINAL")
 				if _try_terminal(map, pos, neededRooms):
 					set = true
 		
 		if not set:
 			if sizeY > layout.maxSize.y:
-				print("Outside y check")
+				debug("Outside y check")
 				if pos.y < minY || maxY < pos.y:
-					print("TERMINAL")
+					debug("TERMINAL")
 					if _try_terminal(map, pos, neededRooms):
 						set = true
 						
 		if not set:
 			if not _trySetGroup(map, group, pos, layout, neededRooms):
-				print("MASTER")
+				debug("MASTER")
 				_trySetGroup(map, group, pos, master_grammar, neededRooms)
 			set = true
 			
@@ -169,11 +145,11 @@ func generate_layout(layout : Layout):
 		sizeX = maxX - minX + 1;
 		sizeY = maxY - minY + 1;
 		
-		print(str(Vector2(minX, minY)) + " " + str(Vector2(maxX, maxY)) + " " + str(Vector2(sizeX, sizeY)))
-		print(neededRooms.size())
+		debug(str(Vector2(minX, minY)) + " " + str(Vector2(maxX, maxY)) + " " + str(Vector2(sizeX, sizeY)))
+		debug(neededRooms.size())
 		
-	print("DONE")
-
+	print("DONE! SIZE: " + str(Vector2(sizeX, sizeY)))
+	print_layout(map, minX, maxX, minY, maxY)
 
 func _try_terminal(currentLayout: TileMap, pos: Vector2, toSet: Dictionary):
 	return _trySetArray(currentLayout, TERMINAL, pos, toSet, false)
@@ -183,7 +159,7 @@ func _get_random(array: Array):
 	return array[0]
 
 func _trySetGroup(currentLayout: TileMap, group: String, pos: Vector2, layout: Layout, toSet: Dictionary):
-	print("\tGROUP: " + group)
+	debug("\tGROUP: " + group)
 	return _trySetArray(currentLayout, layout.roomGroups[group], pos, toSet, true)
 
 #FIGURE OUT toSet
@@ -191,14 +167,14 @@ func _trySetArray(currentLayout: TileMap, roomNames : Array, pos: Vector2, toSet
 	if shuffle:
 		roomNames.shuffle()
 		
-	print("Finding tile for: " + str(pos))
+	debug("Finding tile for: " + str(pos))
 	for name in roomNames:
 		
-		print("\tTrying to place " + name)
+		debug("\tTrying to place " + name)
 		var roomType = roomTypes[name]
 		if _can_room_exist(currentLayout, pos, roomType):
 			
-			print("\t\t\tPlaced " + name)
+			debug("\t\t\tPlaced " + name)
 			_set_room(currentLayout, pos, roomType, toSet)
 			return true;
 	
@@ -225,7 +201,7 @@ func _add_if_needed(currentLayout: TileMap, pos: Vector2, group: String, toSet: 
 	
 	if currentLayout.get_cellv(pos) != -1:
 		return
-	print("ADDING" + str(pos) + "WITH GROUP" + group)
+	debug("ADDING" + str(pos) + "WITH GROUP" + group)
 	if not toSet.has(pos):
 		toSet[pos] = group
 
@@ -235,22 +211,22 @@ func _can_room_exist(currentLayout: TileMap, pos: Vector2, roomType: RoomType):
 		
 	var opcode = roomType.opcode
 
-	print("\t\tChecking TOP")
+	debug("\t\tChecking TOP")
 	if not _check_opcode(currentLayout, opcode, pos + UP_V, TOP, BOTTOM):
 		return false
 		
-	print("\t\tChecking BOTTOM")
+	debug("\t\tChecking BOTTOM")
 	if not _check_opcode(currentLayout, opcode, pos + DOWN_V, BOTTOM, TOP):
 		return false
 		
-	print("\t\tChecking RIGHT")
+	debug("\t\tChecking RIGHT")
 	if not _check_opcode(currentLayout, opcode, pos + RIGHT_V, RIGHT, LEFT):
 		return false
 		
-	print("\t\tChecking LEFT")
+	debug("\t\tChecking LEFT")
 	if not _check_opcode(currentLayout, opcode, pos + LEFT_V, LEFT, RIGHT):
 		return false
-	print("\t\tPASSED ALL CHECKS")
+	debug("\t\tPASSED ALL CHECKS")
 	return true
 	
 func _check_opcode(currentLayout: TileMap, opcode: int,  pos: Vector2, bit: int, opposite: int):
