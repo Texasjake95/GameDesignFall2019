@@ -44,8 +44,10 @@ config/icon="res://images/icon.png"
 
 [autoload]
 
+util="*res://util.gd"
 collision_manager="*res://collision_manager.gd"
 tile_manager="*res://tile_manager.gd"
+layout_gen="*res://layout_gen.gd"
 
 [input]
 
