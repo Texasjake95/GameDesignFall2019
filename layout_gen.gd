@@ -156,7 +156,9 @@ func generate_layout(layout : Layout):
 				debug("MASTER")
 				_trySetGroup(map, group, pos, master_grammar, neededRooms)
 			set = true
-			
+		
+		assert(set)
+		
 		minX = min(pos.x, minX)
 		maxX = max(pos.x, maxX)
 		minY = min(pos.y, minY)
