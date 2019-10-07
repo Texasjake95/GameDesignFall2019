@@ -33,7 +33,7 @@ const LEFT_V = Vector2(-1, 0)
 const roomTypes = Dictionary()
 const opcodeLookup = []
 var master_grammar = load_layout("dungeon_grammar.json")
-var test_grammar
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	randomize()
@@ -54,9 +54,7 @@ func _ready():
 		opcodeLookup[value.opcode] = value
 		print(opcodeLookup[value.opcode].name)
 
-	test_grammar = load_layout("test3.json")
 	
-	generate_layout(test_grammar)
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass
@@ -156,7 +154,8 @@ func generate_layout(layout : Layout):
 	print("Time taken to generate: " + str(total_time) + "us")
 	print("Time taken to generate: " + str(total_time/1000) + "ms")
 	print("Time taken to generate: " + str(total_time/1000000) + "s")
-
+	return map
+	
 func _try_terminal(currentLayout: TileMap, pos: Vector2, toSet: Dictionary):
 	return _trySetArray(currentLayout, TERMINAL, pos, toSet, false)
 
