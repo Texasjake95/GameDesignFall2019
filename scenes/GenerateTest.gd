@@ -7,7 +7,7 @@ extends Node2D
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	
-	var grammar = layout_gen.load_layout("test3.json")
+	var grammar = layout_gen.load_layout("res://test3.json")
 	var generated : TileMap = layout_gen.generate_layout(grammar)
 	#var generated : TileMap = TileMap.new()
 	

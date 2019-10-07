@@ -32,7 +32,7 @@ const LEFT_V = Vector2(-1, 0)
 
 const roomTypes = Dictionary()
 const opcodeLookup = []
-var master_grammar = load_layout("dungeon_grammar.json")
+var master_grammar
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -53,7 +53,7 @@ func _ready():
 	for value in roomTypes.values():
 		opcodeLookup[value.opcode] = value
 		print(opcodeLookup[value.opcode].name)
-
+	master_grammar = load_layout("res://dungeon_grammar.json")
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
@@ -70,7 +70,28 @@ func load_layout(fileLoc):
 	var roomGroups = layoutData["roomGroups"]
 	layout.init(maxSize, roomGroups)
 	
+	var errors = 0
+	
+	errors += _check_group("TOP", layout.roomGroups["TOP"], TOP)
+	errors += _check_group("BOTTOM", layout.roomGroups["BOTTOM"], BOTTOM)
+	errors += _check_group("LEFT", layout.roomGroups["LEFT"], LEFT)
+	errors += _check_group("RIGHT", layout.roomGroups["RIGHT"], RIGHT)
+	
+	assert(errors == 0)
+	
 	return layout
+
+func _check_group(groupName, rooms, bit):
+	
+	var errors = 0
+	
+	for name in rooms:
+		var room = roomTypes[name]
+		if not util.check(room.opcode, bit):
+			print("INVALID ROOM " + name + " IN " + groupName)
+			errors += 1
+	
+	return errors
 
 func print_layout(tileMap: TileMap, minX, maxX, minY, maxY):
 	for y in range(minY, maxY+1):
