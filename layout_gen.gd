@@ -110,9 +110,17 @@ func _get_char(map: TileMap, x, y):
 	
 	return room
 
-func generate_layout(layout : Layout):
-	randomize()
+func generate_layout(layout : Layout, ranSeed=null):
 	print("GENERATING")
+	if ranSeed == null:
+		randomize()
+		var random_seed = randi()
+		seed(random_seed)
+		print("\tUsing seed: " + str(random_seed))
+	else:
+		seed(ranSeed)
+		print("\tUsing seed: " + str(ranSeed))
+	
 	var map = TileMap.new()
 	var minX = 0
 	var maxX = 0
