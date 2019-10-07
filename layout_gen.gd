@@ -154,8 +154,9 @@ func generate_layout(layout : Layout):
 		if not set:
 			if not _trySetGroup(map, group, pos, layout, neededRooms):
 				debug("MASTER")
-				_trySetGroup(map, group, pos, master_grammar, neededRooms)
-			set = true
+				set = _trySetGroup(map, group, pos, master_grammar, neededRooms)
+			else:
+				set = true
 		
 		assert(set)
 		
