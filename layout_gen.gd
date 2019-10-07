@@ -36,7 +36,7 @@ var master_grammar
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	randomize()
+
 	var roomTypeData : Dictionary = util.loadJson("res://room_types.json")
 	for key in roomTypeData.keys() :
 		
@@ -111,6 +111,7 @@ func _get_char(map: TileMap, x, y):
 	return room
 
 func generate_layout(layout : Layout):
+	randomize()
 	print("GENERATING")
 	var map = TileMap.new()
 	var minX = 0
@@ -169,7 +170,7 @@ func generate_layout(layout : Layout):
 		
 	var total_time = OS.get_ticks_usec() - time_before
 	print("DONE! SIZE: " + str(Vector2(sizeX, sizeY)))
-	print_layout(map, minX, maxX, minY, maxY)
+	#print_layout(map, minX, maxX, minY, maxY)
 	
 
 	print("Time taken to generate: " + str(total_time) + "us")
