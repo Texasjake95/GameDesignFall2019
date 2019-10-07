@@ -14,13 +14,5 @@ func _ready():
 	var tile_set = load("res://scenes/layout_tileset.tres")
 	generated.set_tileset(tile_set)
 	generated.set_cell_size(Vector2(30,30))
-	layout_gen.opcodeLookup
-	
 	
 	add_child(generated)
-	
-	pass # Replace with function body.
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
