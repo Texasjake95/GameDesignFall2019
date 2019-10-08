@@ -9,6 +9,11 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "Node",
+"class": "BaseCondition",
+"language": "GDScript",
+"path": "res://conditions/base_conditions.gd"
+}, {
 "base": "KinematicBody2D",
 "class": "Entity_Base",
 "language": "GDScript",
@@ -24,16 +29,29 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://scripts/item2.gd"
 }, {
+"base": "BaseCondition",
+"class": "ItemCondition",
+"language": "GDScript",
+"path": "res://conditions/item_condition.gd"
+}, {
 "base": "Entity_Base",
 "class": "Player",
 "language": "GDScript",
 "path": "res://scripts/troll.gd"
+}, {
+"base": "BaseCondition",
+"class": "TimerCondition",
+"language": "GDScript",
+"path": "res://conditions/timer_condition.gd"
 } ]
 _global_script_class_icons={
+"BaseCondition": "",
 "Entity_Base": "",
 "Item": "",
 "Item2": "",
-"Player": ""
+"ItemCondition": "",
+"Player": "",
+"TimerCondition": ""
 }
 
 [application]
@@ -48,6 +66,7 @@ util="*res://util.gd"
 collision_manager="*res://collision_manager.gd"
 tile_manager="*res://tile_manager.gd"
 layout_gen="*res://layout_gen.gd"
+game_conditions="*res://conditions/game_conditions.gd"
 
 [input]
 
