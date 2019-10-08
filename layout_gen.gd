@@ -178,41 +178,55 @@ func generate_layout(layout : Layout, ranSeed=null) -> TileMap:
 	var time_before = OS.get_ticks_usec()
 	_set_room(map, Vector2(0, 0), roomTypes[_get_random(layout.roomGroups["START"])], neededRooms)
 	
+	#Needed Rooms need to be empty inorder for generation to be successful
 	while neededRooms.size() > 0:
-		sizeX = maxX - minX + 1;
-		sizeY = maxY - minY + 1;
 		
+		#Get next position to set at along with the rooom
 		var pos = neededRooms.keys()[0]
 		var group = neededRooms[pos]
 		
+		#Remove this position as it WILL be set this iteration
 		neededRooms.erase(pos)
 		debug(neededRooms.size())
+		
+		#Check and make sure a room type is set
 		var set = false
 		
+		# If the size if bigger than the configured size
 		if sizeX > layout.maxSize.x:
 			debug("Outside x check")
+			#Make sure we are on the border
 			if pos.x <= minX || maxX <= pos.x:
 				debug("TERMINAL")
-				if _try_terminal(map, pos, neededRooms):
-					set = true
+				#Try to set a "terminal" room type
+				set = _try_terminal(map, pos, neededRooms)
+
 		
+		#Only check y if x failed
 		if not set:
+			# If the size if bigger than the configured size
 			if sizeY > layout.maxSize.y:
 				debug("Outside y check")
+				#Make sure we are on the border
 				if pos.y <= minY || maxY <= pos.y:
 					debug("TERMINAL")
-					if _try_terminal(map, pos, neededRooms):
-						set = true
+					#Try to set a "terminal" room type
+					set = _try_terminal(map, pos, neededRooms)
 						
+		#If were are not too big or inside the border
 		if not set:
+			#Set a room type from the provided layout configuration
 			if not _trySetGroup(map, group, pos, layout, neededRooms):
 				debug("MASTER")
+				# If not successful have master set a room type
 				set = _trySetGroup(map, group, pos, master_grammar, neededRooms)
 			else:
 				set = true
 		
+		#Error out if the set was not successful
 		assert(set)
 		
+		#Update all the things
 		minX = min(pos.x, minX)
 		maxX = max(pos.x, maxX)
 		minY = min(pos.y, minY)
@@ -233,84 +247,113 @@ func generate_layout(layout : Layout, ranSeed=null) -> TileMap:
 	print("Time taken to generate: " + str(total_time/1000) + "ms")
 	print("Time taken to generate: " + str(total_time/1000000) + "s")
 	return map
-	
-func _try_terminal(currentLayout: TileMap, pos: Vector2, toSet: Dictionary) -> bool:
-	return _trySetArray(currentLayout, TERMINAL, pos, toSet, false)
 
-func _get_random(array: Array) -> Vector2:
+#Used to try and stop generation pass the position provided
+func _try_terminal(currentLayout: TileMap, pos: Vector2, neededRooms: Dictionary) -> bool:
+	return _trySetArray(currentLayout, TERMINAL, pos, neededRooms, false)
+
+#Get a random element in the given array
+func _get_random(array: Array):
 	array.shuffle()
 	return array[0]
 
-func _trySetGroup(currentLayout: TileMap, group: String, pos: Vector2, layout: Layout, toSet: Dictionary) -> bool:
+#Try to set a room type from the layout provided at position with the given room type
+func _trySetGroup(currentLayout: TileMap, group: String, pos: Vector2, layout: Layout, neededRooms: Dictionary) -> bool:
 	debug("\tGROUP: " + group)
-	return _trySetArray(currentLayout, layout.roomGroups[group], pos, toSet, true)
+	return _trySetArray(currentLayout, layout.roomGroups[group], pos, neededRooms, true)
 
-func _trySetArray(currentLayout: TileMap, roomNames : Array, pos: Vector2, toSet: Dictionary, shuffle : bool) -> bool:
+#Try to set a room from the provided types at position
+func _trySetArray(currentLayout: TileMap, roomNames : Array, pos: Vector2, neededRooms: Dictionary, shuffle : bool) -> bool:
 	if shuffle:
 		roomNames.shuffle()
 		
 	debug("Finding tile for: " + str(pos))
+	#Iterate through all rooms as the first one might not be able to set
 	for name in roomNames:
 		
 		debug("\tTrying to place " + name)
 		var roomType = roomTypes[name]
+		#Check if room and exist
 		if _can_room_exist(currentLayout, pos, roomType):
 			
 			debug("\t\t\tPlaced " + name)
-			_set_room(currentLayout, pos, roomType, toSet)
+			#And place room
+			_set_room(currentLayout, pos, roomType, neededRooms)
 			return true;
 	
 	return false
 	
-func _set_room(currentLayout: TileMap, pos: Vector2, roomType: RoomType, toSet: Dictionary):
+func _set_room(currentLayout: TileMap, pos: Vector2, roomType: RoomType, neededRooms: Dictionary):
+	#Set the room via opcode as it should be unique and TileMaps can't store string
 	currentLayout.set_cellv(pos, roomType.opcode)
 	
 	var opcode = roomType.opcode
 	
+	#If room type as a top exit 
 	if util.check(opcode, TOP):
-		_add_if_needed(currentLayout, pos + UP_V, "BOTTOM", toSet)
-		
-	if util.check(opcode, BOTTOM):
-		_add_if_needed(currentLayout, pos + DOWN_V, "TOP", toSet)
-		
-	if util.check(opcode, LEFT):
-		_add_if_needed(currentLayout, pos + LEFT_V, "RIGHT", toSet)
-		
-	if util.check(opcode, RIGHT):
-		_add_if_needed(currentLayout, pos + RIGHT_V, "LEFT", toSet)
-		
-func _add_if_needed(currentLayout: TileMap, pos: Vector2, group: String, toSet: Dictionary):
+		#Request a room that has a bottom exit be place above
+		_add_if_needed(currentLayout, pos + UP_V, "BOTTOM", neededRooms)
 	
+	#If room type as a bottom exit
+	if util.check(opcode, BOTTOM):
+		#Request a room that has a top exit be place below
+		_add_if_needed(currentLayout, pos + DOWN_V, "TOP", neededRooms)
+	
+	#If room type as a left exit
+	if util.check(opcode, LEFT):
+		#Request a room that has a right exit be place to the left
+		_add_if_needed(currentLayout, pos + LEFT_V, "RIGHT", neededRooms)
+	
+	#If room type as a right exit
+	if util.check(opcode, RIGHT):
+		#Request a room that has a left exit be place to the right
+		_add_if_needed(currentLayout, pos + RIGHT_V, "LEFT", neededRooms)
+
+#Used to keep track of positions that need to be generated
+func _add_if_needed(currentLayout: TileMap, pos: Vector2, group: String, neededRooms: Dictionary):
+	
+	#Do nothing if tile exists should be a vaild tile
 	if currentLayout.get_cellv(pos) != -1:
 		return
+		
 	debug("ADDING" + str(pos) + "WITH GROUP" + group)
-	if not toSet.has(pos):
-		toSet[pos] = group
+	#Make sure position is not request as placement code will ensure valid type is placed
+	if not neededRooms.has(pos):
+		#Add position and group to neededRooms
+		neededRooms[pos] = group
 
+#Used to ensure the room type attempting to be place can live at position
 func _can_room_exist(currentLayout: TileMap, pos: Vector2, roomType: RoomType) -> bool:
+	
+	#If there is a room type here, HOW DID WE GET HERE?!?!?
 	if currentLayout.get_cellv(pos) >= 0:
 		return false;
 		
 	var opcode = roomType.opcode
 
 	debug("\t\tChecking TOP")
+	#Ensure that if we have a top exit that type above (if any) has a bottom exit
 	if not _check_opcode(currentLayout, opcode, pos + UP_V, TOP, BOTTOM):
 		return false
 		
 	debug("\t\tChecking BOTTOM")
+	#Ensure that if we have a bottom exit that type below (if any) has a top exit
 	if not _check_opcode(currentLayout, opcode, pos + DOWN_V, BOTTOM, TOP):
 		return false
 		
 	debug("\t\tChecking RIGHT")
+	#Ensure that if we have a right exit that type to the right (if any) has a left exit
 	if not _check_opcode(currentLayout, opcode, pos + RIGHT_V, RIGHT, LEFT):
 		return false
 		
 	debug("\t\tChecking LEFT")
+	#Ensure that if we have a left exit that type to the left (if any) has a right exit
 	if not _check_opcode(currentLayout, opcode, pos + LEFT_V, LEFT, RIGHT):
 		return false
 	debug("\t\tPASSED ALL CHECKS")
 	return true
-	
+
+#Not sure how to document this function....
 func _check_opcode(currentLayout: TileMap, opcode: int,  pos: Vector2, bit: int, opposite: int) -> bool:
 	var neighborOpcode = currentLayout.get_cellv(pos)
 	
