@@ -72,18 +72,23 @@ func load_layout(fileLoc):
 	
 	var errors = 0
 	
-	errors += _check_group("TOP", layout.roomGroups["TOP"], TOP)
-	errors += _check_group("BOTTOM", layout.roomGroups["BOTTOM"], BOTTOM)
-	errors += _check_group("LEFT", layout.roomGroups["LEFT"], LEFT)
-	errors += _check_group("RIGHT", layout.roomGroups["RIGHT"], RIGHT)
+	errors += _check_group("TOP", layout, TOP)
+	errors += _check_group("BOTTOM", layout, BOTTOM)
+	errors += _check_group("LEFT", layout, LEFT)
+	errors += _check_group("RIGHT", layout, RIGHT)
 	
 	assert(errors == 0)
 	
 	return layout
 
-func _check_group(groupName, rooms, bit):
+func _check_group(groupName, layout, bit):
+	
+	if not layout.roomGroups.has(groupName):
+		return 1
 	
 	var errors = 0
+	
+	var rooms = layout.roomGroups[groupName]
 	
 	for name in rooms:
 		var room = roomTypes[name]
@@ -219,7 +224,7 @@ func _trySetArray(currentLayout: TileMap, roomNames : Array, pos: Vector2, toSet
 	return false
 	
 func _set_room(currentLayout: TileMap, pos: Vector2, roomType: RoomType, toSet: Dictionary):
-	currentLayout.set_cell(pos.x, pos.y, roomType.opcode)
+	currentLayout.set_cellv(pos, roomType.opcode)
 	
 	var opcode = roomType.opcode
 	
