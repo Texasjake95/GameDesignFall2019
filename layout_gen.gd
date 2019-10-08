@@ -60,6 +60,7 @@ var FOUR_WAY: RoomType
 # Called when the node enters the scene tree for the first time.
 func _ready():
 
+
 	var roomTypeData : Dictionary = util.loadJson("res://room_types.json")
 	for key in roomTypeData.keys() :
 		
@@ -116,6 +117,7 @@ func load_layout(fileLoc) -> Layout:
 	errors += _check_group("BOTTOM", layout, BOTTOM)
 	errors += _check_group("LEFT", layout, LEFT)
 	errors += _check_group("RIGHT", layout, RIGHT)
+	errors += _check_group("START", layout, 0)
 	
 	assert(errors == 0)
 	
@@ -124,14 +126,22 @@ func load_layout(fileLoc) -> Layout:
 func _check_group(groupName, layout, bit) -> int:
 	
 	if not layout.roomGroups.has(groupName):
+		print("GROUP: " + groupName + " DOES NOT EXIST")
 		return 1
-	
-	var errors = 0
 	
 	var rooms = layout.roomGroups[groupName]
 	
+	if rooms.size() == 0:
+		print("NO ROOMS IN: " + groupName)
+		return 1
+		
+	var errors = 0
 	for name in rooms:
+		if not roomTypes.has(name):
+			print("INVALID ROOM " + name + " IN " + groupName + " DOES NOT EXIST")
+		
 		var room = roomTypes[name]
+		
 		if not util.check(room.opcode, bit):
 			print("INVALID ROOM " + name + " IN " + groupName)
 			errors += 1
