@@ -353,16 +353,22 @@ func _can_room_exist(currentLayout: TileMap, pos: Vector2, roomType: RoomType) -
 	debug("\t\tPASSED ALL CHECKS")
 	return true
 
-#Not sure how to document this function....
+#Check neighbor at position to see if its room type and the 
+#current one that is being placed (opcode) is a valid pair
 func _check_opcode(currentLayout: TileMap, opcode: int,  pos: Vector2, bit: int, opposite: int) -> bool:
 	var neighborOpcode = currentLayout.get_cellv(pos)
 	
+	#If neighbor doesn't exist then placement is valid
 	if neighborOpcode == -1:
 		return true
-		
+	
+	#Check if exit exists
 	var check1 = util.check(opcode, bit)
+	
+	#Check if neighbors exit exists
 	var check2 = util.check(neighborOpcode, opposite)
 	
+	#If both exits exists or both exist do not exist placement is valid
 	return check1 == check2
 
 class RoomType:
