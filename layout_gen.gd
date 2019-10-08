@@ -32,7 +32,30 @@ const LEFT_V = Vector2(-1, 0)
 
 const roomTypes = Dictionary()
 const opcodeLookup = []
+
 var master_grammar
+
+const TOP = 1 << 0
+const BOTTOM = 1 << 1
+const LEFT = 1 << 2
+const RIGHT = 1 << 3
+
+var NONE: RoomType
+var DEAD_U: RoomType
+var DEAD_D: RoomType
+var DEAD_L: RoomType
+var DEAD_R: RoomType
+var LINE: RoomType
+var I_SHAPE: RoomType
+var L_SHAPE: RoomType
+var L_90_SHAPE: RoomType
+var L_180_SHAPE: RoomType
+var L_270_SHAPE: RoomType
+var T_SHAPE: RoomType
+var T_90_SHAPE: RoomType
+var T_180_SHAPE: RoomType
+var T_270_SHAPE: RoomType
+var FOUR_WAY: RoomType
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -47,7 +70,24 @@ func _ready():
 		
 		roomType.init(roomName, roomExits)
 		roomTypes[key] = roomType
-		
+	
+	NONE = roomTypes["NONE"]
+	FOUR_WAY = roomTypes["4_WAY"]
+	DEAD_U = roomTypes["DEAD_U"]
+	DEAD_D = roomTypes["DEAD_D"]
+	DEAD_L = roomTypes["DEAD_L"]
+	DEAD_R = roomTypes["DEAD_R"]
+	LINE = roomTypes["LINE"]
+	I_SHAPE = roomTypes["I_SHAPE"]
+	L_SHAPE = roomTypes["L_SHAPE"]
+	L_90_SHAPE = roomTypes["L_90_SHAPE"]
+	L_180_SHAPE = roomTypes["L_180_SHAPE"]
+	L_270_SHAPE = roomTypes["L_270_SHAPE"]
+	T_SHAPE = roomTypes["T_SHAPE"]
+	T_90_SHAPE = roomTypes["T_90_SHAPE"]
+	T_180_SHAPE = roomTypes["T_180_SHAPE"]
+	T_270_SHAPE = roomTypes["T_270_SHAPE"]
+
 	opcodeLookup.resize(roomTypes.size())
 	
 	for value in roomTypes.values():
@@ -59,14 +99,14 @@ func _ready():
 #func _process(delta):
 #	pass
 	
-func load_layout(fileLoc):
+func load_layout(fileLoc) -> Layout:
 	var layoutData = util.loadJson(fileLoc)
 	
 	var layout = Layout.new()
 	
 	var maxSizeData = layoutData["maxSize"]
 	var maxSize = Vector2(maxSizeData["x"], maxSizeData["y"])
-	print(maxSize)
+
 	var roomGroups = layoutData["roomGroups"]
 	layout.init(maxSize, roomGroups)
 	
@@ -81,7 +121,7 @@ func load_layout(fileLoc):
 	
 	return layout
 
-func _check_group(groupName, layout, bit):
+func _check_group(groupName, layout, bit) -> int:
 	
 	if not layout.roomGroups.has(groupName):
 		return 1
@@ -105,7 +145,7 @@ func print_layout(tileMap: TileMap, minX, maxX, minY, maxY):
 			toPrint += _get_char(tileMap, x, y)
 		print(toPrint)
 
-func _get_char(map: TileMap, x, y):
+func _get_char(map: TileMap, x, y) -> String:
 	var v = Vector2(x,y)
 	
 	var room = " "
@@ -115,7 +155,7 @@ func _get_char(map: TileMap, x, y):
 	
 	return room
 
-func generate_layout(layout : Layout, ranSeed=null):
+func generate_layout(layout : Layout, ranSeed=null) -> TileMap:
 	print("GENERATING")
 	if ranSeed == null:
 		randomize()
@@ -194,19 +234,18 @@ func generate_layout(layout : Layout, ranSeed=null):
 	print("Time taken to generate: " + str(total_time/1000000) + "s")
 	return map
 	
-func _try_terminal(currentLayout: TileMap, pos: Vector2, toSet: Dictionary):
+func _try_terminal(currentLayout: TileMap, pos: Vector2, toSet: Dictionary) -> bool:
 	return _trySetArray(currentLayout, TERMINAL, pos, toSet, false)
 
-func _get_random(array: Array):
+func _get_random(array: Array) -> Vector2:
 	array.shuffle()
 	return array[0]
 
-func _trySetGroup(currentLayout: TileMap, group: String, pos: Vector2, layout: Layout, toSet: Dictionary):
+func _trySetGroup(currentLayout: TileMap, group: String, pos: Vector2, layout: Layout, toSet: Dictionary) -> bool:
 	debug("\tGROUP: " + group)
 	return _trySetArray(currentLayout, layout.roomGroups[group], pos, toSet, true)
 
-#FIGURE OUT toSet
-func _trySetArray(currentLayout: TileMap, roomNames : Array, pos: Vector2, toSet: Dictionary, shuffle : bool):
+func _trySetArray(currentLayout: TileMap, roomNames : Array, pos: Vector2, toSet: Dictionary, shuffle : bool) -> bool:
 	if shuffle:
 		roomNames.shuffle()
 		
@@ -248,7 +287,7 @@ func _add_if_needed(currentLayout: TileMap, pos: Vector2, group: String, toSet: 
 	if not toSet.has(pos):
 		toSet[pos] = group
 
-func _can_room_exist(currentLayout: TileMap, pos: Vector2, roomType: RoomType):
+func _can_room_exist(currentLayout: TileMap, pos: Vector2, roomType: RoomType) -> bool:
 	if currentLayout.get_cellv(pos) >= 0:
 		return false;
 		
@@ -272,7 +311,7 @@ func _can_room_exist(currentLayout: TileMap, pos: Vector2, roomType: RoomType):
 	debug("\t\tPASSED ALL CHECKS")
 	return true
 	
-func _check_opcode(currentLayout: TileMap, opcode: int,  pos: Vector2, bit: int, opposite: int):
+func _check_opcode(currentLayout: TileMap, opcode: int,  pos: Vector2, bit: int, opposite: int) -> bool:
 	var neighborOpcode = currentLayout.get_cellv(pos)
 	
 	if neighborOpcode == -1:
@@ -282,12 +321,6 @@ func _check_opcode(currentLayout: TileMap, opcode: int,  pos: Vector2, bit: int,
 	var check2 = util.check(neighborOpcode, opposite)
 	
 	return check1 == check2
-
-
-const TOP = 1 << 0
-const BOTTOM = 1 << 1
-const LEFT = 1 << 2
-const RIGHT = 1 << 3
 
 class RoomType:
 	var name : String
@@ -305,7 +338,10 @@ class RoomType:
 		if (exits.has("RIGHT")):
 			opcode = opcode | RIGHT;
 		self.opcode = opcode
-		
+	
+	func getChar() -> String:
+		return layout_gen.HEX[self.opcode]
+	
 class Layout:
 	var roomGroups : Dictionary
 	var maxSize : Vector2
