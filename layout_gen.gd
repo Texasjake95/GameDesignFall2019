@@ -61,7 +61,7 @@ var FOUR_WAY: RoomType
 func _ready():
 
 
-	var roomTypeData : Dictionary = util.loadJson("res://room_types.json")
+	var roomTypeData : Dictionary = util.loadJson("res://internal/room_types.json")
 	for key in roomTypeData.keys() :
 		
 		var data = roomTypeData[key]
@@ -94,7 +94,7 @@ func _ready():
 	for value in roomTypes.values():
 		opcodeLookup[value.opcode] = value
 		print(opcodeLookup[value.opcode].name)
-	master_grammar = load_layout("res://dungeon_grammar.json")
+	master_grammar = load_layout("res://internal/dungeon_grammar.json")
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
