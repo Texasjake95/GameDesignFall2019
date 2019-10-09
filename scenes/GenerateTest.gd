@@ -8,7 +8,7 @@ extends Node2D
 func _ready():
 	
 	var grammar = layout_gen.load_layout("res://test3.json")
-	var generated : TileMap = layout_gen.generate_layout(grammar)
+	var generated : LayoutMap = layout_gen.generate_layout(grammar)
 	#var generated : TileMap = TileMap.new()
 	
 	var tile_set = load("res://scenes/layout_tileset.tres")

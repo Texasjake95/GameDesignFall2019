@@ -148,14 +148,14 @@ func _check_group(groupName, layout, bit) -> int:
 	
 	return errors
 
-func print_layout(tileMap: TileMap, minX, maxX, minY, maxY):
+func print_layout(tileMap: LayoutMap, minX, maxX, minY, maxY):
 	for y in range(minY, maxY+1):
 		var toPrint = ""
 		for x in range(minX, maxX+1):
 			toPrint += _get_char(tileMap, x, y)
 		print(toPrint)
 
-func _get_char(map: TileMap, x, y) -> String:
+func _get_char(map: LayoutMap, x, y) -> String:
 	var v = Vector2(x,y)
 	
 	var room = " "
@@ -165,7 +165,7 @@ func _get_char(map: TileMap, x, y) -> String:
 	
 	return room
 
-func generate_layout(layout : Layout, ranSeed=null) -> TileMap:
+func generate_layout(layout : Layout, ranSeed=null) -> LayoutMap:
 	print("GENERATING")
 	if ranSeed == null:
 		randomize()
@@ -176,13 +176,7 @@ func generate_layout(layout : Layout, ranSeed=null) -> TileMap:
 		seed(ranSeed)
 		print("\tUsing seed: " + str(ranSeed))
 	
-	var map = TileMap.new()
-	var minX = 0
-	var maxX = 0
-	var minY = 0
-	var maxY = 0
-	var sizeX = 1
-	var sizeY = 1
+	var map = LayoutMap.new()
 	var neededRooms = Dictionary()
 	
 	var time_before = OS.get_ticks_usec()
@@ -203,22 +197,21 @@ func generate_layout(layout : Layout, ranSeed=null) -> TileMap:
 		var set = false
 		
 		# If the size if bigger than the configured size
-		if sizeX > layout.maxSize.x:
+		if map.sizeV.x > layout.maxSize.x:
 			debug("Outside x check")
 			#Make sure we are on the border
-			if pos.x <= minX || maxX <= pos.x:
+			if pos.x <= map.minV.x || map.maxV.x <= pos.x:
 				debug("TERMINAL")
 				#Try to set a "terminal" room type
 				set = _try_terminal(map, pos, neededRooms)
-
 		
 		#Only check y if x failed
 		if not set:
 			# If the size if bigger than the configured size
-			if sizeY > layout.maxSize.y:
+			if map.sizeV.y > layout.maxSize.y:
 				debug("Outside y check")
 				#Make sure we are on the border
-				if pos.y <= minY || maxY <= pos.y:
+				if pos.y <= map.minV.y || map.maxV.y <= pos.y:
 					debug("TERMINAL")
 					#Try to set a "terminal" room type
 					set = _try_terminal(map, pos, neededRooms)
@@ -236,30 +229,20 @@ func generate_layout(layout : Layout, ranSeed=null) -> TileMap:
 		#Error out if the set was not successful
 		assert(set)
 		
-		#Update all the things
-		minX = min(pos.x, minX)
-		maxX = max(pos.x, maxX)
-		minY = min(pos.y, minY)
-		maxY = max(pos.y, maxY)
-		
-		sizeX = maxX - minX + 1;
-		sizeY = maxY - minY + 1;
-		
-		debug(str(Vector2(minX, minY)) + " " + str(Vector2(maxX, maxY)) + " " + str(Vector2(sizeX, sizeY)))
+		debug(str(map.minV) + " " + str(map.maxV) + " " + str(map.sizeV))
 		debug(neededRooms.size())
 		
 	var total_time = OS.get_ticks_usec() - time_before
-	print("DONE! SIZE: " + str(Vector2(sizeX, sizeY)))
+	print("DONE! SIZE: " + str(map.sizeV))
 	#print_layout(map, minX, maxX, minY, maxY)
 	
-
 	print("Time taken to generate: " + str(total_time) + "us")
 	print("Time taken to generate: " + str(total_time/1000) + "ms")
 	print("Time taken to generate: " + str(total_time/1000000) + "s")
 	return map
 
 #Used to try and stop generation pass the position provided
-func _try_terminal(currentLayout: TileMap, pos: Vector2, neededRooms: Dictionary) -> bool:
+func _try_terminal(currentLayout: LayoutMap, pos: Vector2, neededRooms: Dictionary) -> bool:
 	return _trySetArray(currentLayout, TERMINAL, pos, neededRooms, false)
 
 #Get a random element in the given array
@@ -268,12 +251,12 @@ func _get_random(array: Array):
 	return array[0]
 
 #Try to set a room type from the layout provided at position with the given room type
-func _trySetGroup(currentLayout: TileMap, group: String, pos: Vector2, layout: Layout, neededRooms: Dictionary) -> bool:
+func _trySetGroup(currentLayout: LayoutMap, group: String, pos: Vector2, layout: Layout, neededRooms: Dictionary) -> bool:
 	debug("\tGROUP: " + group)
 	return _trySetArray(currentLayout, layout.roomGroups[group], pos, neededRooms, true)
 
 #Try to set a room from the provided types at position
-func _trySetArray(currentLayout: TileMap, roomNames : Array, pos: Vector2, neededRooms: Dictionary, shuffle : bool) -> bool:
+func _trySetArray(currentLayout: LayoutMap, roomNames : Array, pos: Vector2, neededRooms: Dictionary, shuffle : bool) -> bool:
 	if shuffle:
 		roomNames.shuffle()
 		
@@ -293,9 +276,9 @@ func _trySetArray(currentLayout: TileMap, roomNames : Array, pos: Vector2, neede
 	
 	return false
 	
-func _set_room(currentLayout: TileMap, pos: Vector2, roomType: RoomType, neededRooms: Dictionary):
+func _set_room(currentLayout: LayoutMap, pos: Vector2, roomType: RoomType, neededRooms: Dictionary):
 	#Set the room via opcode as it should be unique and TileMaps can't store string
-	currentLayout.set_cellv(pos, roomType.opcode)
+	currentLayout.set_roomv(pos, roomType)
 	
 	var opcode = roomType.opcode
 	
@@ -320,7 +303,7 @@ func _set_room(currentLayout: TileMap, pos: Vector2, roomType: RoomType, neededR
 		_add_if_needed(currentLayout, pos + RIGHT_V, "LEFT", neededRooms)
 
 #Used to keep track of positions that need to be generated
-func _add_if_needed(currentLayout: TileMap, pos: Vector2, group: String, neededRooms: Dictionary):
+func _add_if_needed(currentLayout: LayoutMap, pos: Vector2, group: String, neededRooms: Dictionary):
 	
 	#Do nothing if tile exists should be a vaild tile
 	if currentLayout.get_cellv(pos) != -1:
@@ -333,7 +316,7 @@ func _add_if_needed(currentLayout: TileMap, pos: Vector2, group: String, neededR
 		neededRooms[pos] = group
 
 #Used to ensure the room type attempting to be place can live at position
-func _can_room_exist(currentLayout: TileMap, pos: Vector2, roomType: RoomType) -> bool:
+func _can_room_exist(currentLayout: LayoutMap, pos: Vector2, roomType: RoomType) -> bool:
 	
 	#If there is a room type here, HOW DID WE GET HERE?!?!?
 	if currentLayout.get_cellv(pos) >= 0:
@@ -365,7 +348,7 @@ func _can_room_exist(currentLayout: TileMap, pos: Vector2, roomType: RoomType) -
 
 #Check neighbor at position to see if its room type and the 
 #current one that is being placed (opcode) is a valid pair
-func _check_opcode(currentLayout: TileMap, opcode: int,  pos: Vector2, bit: int, opposite: int) -> bool:
+func _check_opcode(currentLayout: LayoutMap, opcode: int,  pos: Vector2, bit: int, opposite: int) -> bool:
 	var neighborOpcode = currentLayout.get_cellv(pos)
 	
 	#If neighbor doesn't exist then placement is valid

@@ -34,6 +34,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://conditions/item_condition.gd"
 }, {
+"base": "TileMap",
+"class": "LayoutMap",
+"language": "GDScript",
+"path": "res://layout_map.gd"
+}, {
 "base": "Entity_Base",
 "class": "Player",
 "language": "GDScript",
@@ -50,6 +55,7 @@ _global_script_class_icons={
 "Item": "",
 "Item2": "",
 "ItemCondition": "",
+"LayoutMap": "",
 "Player": "",
 "TimerCondition": ""
 }
