@@ -43,6 +43,28 @@ class WeightedArray:
 				return object.object
 			
 		return array[-1].object
+		
+	func shuffle():
+		var result = []
+		var tW = self.totalWeight
+		var indecies = range(array.size())
+
+		while indecies.size() > 0:
+
+			var rand = randi() % tW
+			var i = 0
+			
+			while rand > array[indecies[i]].weight:
+				rand -= array[indecies[i]].weight
+				i += 1
+			
+			var object = array[indecies[i]]
+			
+			result.push_back(object.object)
+			tW -= object.weight
+			indecies.remove(i)
+			
+		return result
 	
 class WeightedObject:
 	var object
