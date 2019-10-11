@@ -1,11 +1,14 @@
 extends BaseCollisionManager
 
+var tile_manager: BaseCollisionManager
+
 func _ready():	
 	addMapping(TileMap, KinematicBody2D, funcref(self, "_playerTileHandle"))
 	addMapping(Item2, Player, funcref(self,"_playerItemHandle2"))
 	addMapping(Item, Player, funcref(self,"_playerItemHandle"))
-
-		
+	
+	tile_manager = load("res://tile_manager.gd").new()
+	add_child(tile_manager)
 
 # See docs for KinematicBody2D:move_and_collide 
 func moveAndCollide(entity : KinematicBody2D, velocity : Vector2, delta,

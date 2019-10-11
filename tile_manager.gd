@@ -69,7 +69,7 @@ class TileData:
 		var dist = tileMap.cell_size.length_squared() * 1000
 		var tile = Vector2(0,0)
 		
-		for v in tile_manager.validDirs:
+		for v in collision_manager.tile_manager.validDirs:
 			
 			var tilePos = currentTile + v
 			
