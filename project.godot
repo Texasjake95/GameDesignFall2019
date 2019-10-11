@@ -10,6 +10,11 @@ config_version=4
 
 _global_script_classes=[ {
 "base": "Node",
+"class": "BaseCollisionManager",
+"language": "GDScript",
+"path": "res://base_collision_manager.gd"
+}, {
+"base": "Node",
 "class": "BaseCondition",
 "language": "GDScript",
 "path": "res://conditions/base_conditions.gd"
@@ -55,6 +60,7 @@ _global_script_classes=[ {
 "path": "res://conditions/timer_condition.gd"
 } ]
 _global_script_class_icons={
+"BaseCollisionManager": "",
 "BaseCondition": "",
 "Entity_Base": "",
 "Item": "",
@@ -74,10 +80,8 @@ config/icon="res://images/icon.png"
 
 [autoload]
 
-util="*res://util.gd"
 collision_manager="*res://collision_manager.gd"
 tile_manager="*res://tile_manager.gd"
-layout_gen="*res://layout_gen.gd"
 game_conditions="*res://conditions/game_conditions.gd"
 
 [input]

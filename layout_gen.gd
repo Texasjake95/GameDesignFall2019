@@ -183,7 +183,7 @@ func generate_layout(layout : Layout, ranSeed=null) -> LayoutMap:
 	var neededRooms = Dictionary()
 	
 	var time_before = OS.get_ticks_usec()
-	_set_room(map, Vector2(0, 0), roomTypes[_get_random(layout.roomGroups["START"])], neededRooms)
+	_set_room(map, Vector2(0, 0), roomTypes[util.get_random(layout.roomGroups["START"])], neededRooms)
 	
 	#Needed Rooms need to be empty inorder for generation to be successful
 	while neededRooms.size() > 0:
@@ -247,11 +247,6 @@ func generate_layout(layout : Layout, ranSeed=null) -> LayoutMap:
 #Used to try and stop generation pass the position provided
 func _try_terminal(currentLayout: LayoutMap, pos: Vector2, neededRooms: Dictionary) -> bool:
 	return _trySetArray(currentLayout, TERMINAL, pos, neededRooms, false)
-
-#Get a random element in the given array
-func _get_random(array: Array):
-	array.shuffle()
-	return array[0]
 
 #Try to set a room type from the layout provided at position with the given room type
 func _trySetGroup(currentLayout: LayoutMap, group: String, pos: Vector2, layout: Layout, neededRooms: Dictionary) -> bool:
