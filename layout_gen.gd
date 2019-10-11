@@ -57,10 +57,10 @@ var T_180_SHAPE: RoomType
 var T_270_SHAPE: RoomType
 var FOUR_WAY: RoomType
 
+var room_manager: RoomManager
 # Called when the node enters the scene tree for the first time.
 func _ready():
-
-
+	
 	var roomTypeData : Dictionary = util.loadJson("res://internal/room_types.json")
 	for key in roomTypeData.keys() :
 		
@@ -93,8 +93,11 @@ func _ready():
 	
 	for value in roomTypes.values():
 		opcodeLookup[value.opcode] = value
-		print(opcodeLookup[value.opcode].name + "=" + value.getChar())
+		print(opcodeLookup[value.opcode].name)
 	master_grammar = load_layout("res://internal/dungeon_grammar.json")
+	
+	room_manager = load("res://room_manager.gd").new()
+	add_child(room_manager)
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):

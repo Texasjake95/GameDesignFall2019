@@ -12,7 +12,7 @@ func _ready():
 	var reverse90 = mapper90
 	var reverse180 = mapper180
 	var reverse270 = mapper270
-	
+	print("ADDING ROTS")
 	#1 exits
 	_add_rotation("DEAD_U", "DEAD_D", reverse180)
 	_add_rotation("DEAD_U", "DEAD_L", reverse90)
@@ -89,38 +89,41 @@ func _get_rotation(startType, endType):
 		return mapper
 	
 	return rotation_lookup[startType][endType]	
+
+func get_room(roomType):
+	var room = null #TODO get room
+	return _get_provider(room, roomType)
 	
-	
-func get_provider(room, requestedType):
+func _get_provider(room, requestedType):
 	var roomType = room.get_type()
 	var rotation = _get_rotation(roomType, requestedType)
 	
 	return RoomProvider.new(room, rotation)
 
 #Store rotation functions as a variable to call them later see RoomProvider below
-var mapper = funcref(self, "with_no_degree")
-var mapper90 = funcref(self, "with_90_degree")
-var mapper180 = funcref(self, "with_180_degree")
-var mapper270 = funcref(self, "with_270_degree")
+var mapper = funcref(self, "_with_no_degree")
+var mapper90 = funcref(self, "_with_90_degree")
+var mapper180 = funcref(self, "_with_180_degree")
+var mapper270 = funcref(self, "_with_270_degree")
 
 #These are written like this so that there are not 4 multiplications happening every call
 #with approximately 81 call PER room it get very expensive very fast 
-func with_no_degree(pos: Vector2):
+func _with_no_degree(pos: Vector2):
 	return pos
 
-func with_90_degree(pos: Vector2):
+func _with_90_degree(pos: Vector2):
 	return Vector2(-pos.y, pos.x)
 
-func with_180_degree(pos: Vector2):
+func _with_180_degree(pos: Vector2):
 	return Vector2(-pos.x, -pos.y)
 
-func with_270_degree(pos: Vector2):
+func _with_270_degree(pos: Vector2):
 	return Vector2(pos.y, -pos.x)
 
 #Rooms can be rotated inorder to fit several types 
 #This is a bridge to help with that
 class RoomProvider:
-	var mapper = RoomManager.mapper
+	var mapper = null
 	var room = null
 	
 	func _init(room, mapper):
