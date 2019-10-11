@@ -35,10 +35,7 @@
     ],
     "LEFT": [
       "4_WAY",
-      {
-        "type": "DEAD_R",
-        "weight": 100
-      },
+      "DEAD_R",
       "LINE",
       "L_90_SHAPE",
       "L_180_SHAPE",
