@@ -93,7 +93,7 @@ func _ready():
 	
 	for value in roomTypes.values():
 		opcodeLookup[value.opcode] = value
-		print(opcodeLookup[value.opcode].name)
+		print(opcodeLookup[value.opcode].name + "=" + value.getChar())
 	master_grammar = load_layout("res://internal/dungeon_grammar.json")
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.

@@ -44,6 +44,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://scripts/troll.gd"
 }, {
+"base": "Node",
+"class": "RoomManager",
+"language": "GDScript",
+"path": "res://room_manager.gd"
+}, {
 "base": "BaseCondition",
 "class": "TimerCondition",
 "language": "GDScript",
@@ -57,6 +62,7 @@ _global_script_class_icons={
 "ItemCondition": "",
 "LayoutMap": "",
 "Player": "",
+"RoomManager": "",
 "TimerCondition": ""
 }
 

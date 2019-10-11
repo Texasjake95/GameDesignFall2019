@@ -7,41 +7,41 @@
       "4_WAY",
       "DEAD_D",
       "I_SHAPE",
-      "L_270_SHAPE",
       "L_SHAPE",
+      "L_90_SHAPE",
+      "T_90_SHAPE",
       "T_180_SHAPE",
-      "T_270_SHAPE",
-      "T_SHAPE"
+      "T_270_SHAPE"
     ],
     "BOTTOM": [
       "4_WAY",
       "DEAD_U",
       "I_SHAPE",
       "L_180_SHAPE",
-      "L_90_SHAPE",
-      "T_180_SHAPE",
+      "L_270_SHAPE",
+      "T_SHAPE",
       "T_90_SHAPE",
-      "T_SHAPE"
+      "T_270_SHAPE"
     ],
     "RIGHT": [
       "4_WAY",
       "DEAD_R",
       "LINE",
-      "L_90_SHAPE",
       "L_SHAPE",
-      "T_270_SHAPE",
+      "L_270_SHAPE",
+      "T_SHAPE",
       "T_90_SHAPE",
-      "T_SHAPE"
+      "T_180_SHAPE"
     ],
     "LEFT": [
       "4_WAY",
       "DEAD_L",
       "LINE",
+      "L_90_SHAPE",
       "L_180_SHAPE",
-      "L_270_SHAPE",
+      "T_SHAPE",
       "T_180_SHAPE",
-      "T_270_SHAPE",
-      "T_90_SHAPE"
+      "T_270_SHAPE"
     ]
   },
   "maxSize": {
