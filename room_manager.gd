@@ -6,7 +6,7 @@ extends Node
 class_name RoomManager
 # Called when the node enters the scene tree for the first time.
 func _ready():
-
+	loadRooms("res://rooms")
 	#ALL of these are most likely backwards... need to test and see
 	#Easy fix just change which is which here
 	var reverse90 = mapper90
@@ -94,7 +94,7 @@ func get_room(roomType):
 	var room = null #TODO get room
 	return _get_provider(room, roomType)
 	
-func _get_provider(room, requestedType):
+func _get_provider(room: Room, requestedType):
 	var roomType = room.get_type()
 	var rotation = _get_rotation(roomType, requestedType)
 	
@@ -120,13 +120,46 @@ func _with_180_degree(pos: Vector2):
 func _with_270_degree(pos: Vector2):
 	return Vector2(pos.y, -pos.x)
 
+func loadRooms(directory):
+	
+	var dir : Directory = Directory.new()
+	dir.open(directory)
+
+	dir.list_dir_begin()
+	
+	while true:
+		var file = dir.get_next()
+		var fileLoc = directory +"/" + file
+		
+		if file == "":
+			return
+		
+		if file == "." || file == "..":
+			continue
+		
+		if dir.current_is_dir():
+			loadRooms(fileLoc)
+		else:
+			loadRoom(fileLoc)
+
+func loadRoom(fileLoc):
+	
+	if true:
+		print(fileLoc)
+		return
+	
+	var roomJson = util.loadJson(fileLoc)
+	
+	pass
+
+
 #Rooms can be rotated inorder to fit several types 
 #This is a bridge to help with that
 class RoomProvider:
 	var mapper = null
-	var room = null
+	var room: Room = null
 	
-	func _init(room, mapper):
+	func _init(room: Room, mapper):
 		self.room = room
 		self.mapper = mapper
 		
@@ -135,3 +168,17 @@ class RoomProvider:
 			pos = mapper.call_func(pos)
 		
 		return room.get_tile(pos)
+		
+class Room:
+	var baseType
+	var validTypes
+
+	func _init(baseType, validTypes):
+		self.baseType = baseType
+		self.validTypes = validTypes
+	
+	func get_type():
+		return baseType;
+	
+	func get_tile(pos: Vector2):
+		pass
