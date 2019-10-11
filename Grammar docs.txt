@@ -1,0 +1,76 @@
+{
+  "roomGroups" : {
+//All rooms that can be used as a starting point for this layout
+//All room types are valid for this group other than NONE
+    "START": [
+      "4_WAY",
+      "DEAD_D",
+      "DEAD_L",
+      "DEAD_R",
+      "DEAD_U",
+      "I_SHAPE",
+      "LINE",
+      "L_180_SHAPE",
+      "L_270_SHAPE",
+      "L_90_SHAPE",
+      "L_SHAPE",
+      "T_180_SHAPE",
+      "T_270_SHAPE",
+      "T_90_SHAPE",
+      "T_SHAPE"
+    ],
+//All room types that have a top exit that can be used in generation
+//Valid types below
+    "TOP": [
+      "4_WAY",
+      "DEAD_D",
+      "I_SHAPE",
+      "L_270_SHAPE",
+      "L_SHAPE",
+      "T_180_SHAPE",
+      "T_270_SHAPE",
+      "T_SHAPE"
+    ],
+//All room types that have a bottom exit that can be used in generation
+//Valid types below
+    "BOTTOM": [
+      "4_WAY",
+      "DEAD_U",
+      "I_SHAPE",
+      "L_180_SHAPE",
+      "L_90_SHAPE",
+      "T_180_SHAPE",
+      "T_90_SHAPE",
+      "T_SHAPE"
+    ],
+//All room types that have a right exit that can be used in generation
+//Valid types below
+    "RIGHT": [
+      "4_WAY",
+      "DEAD_R",
+      "LINE",
+      "L_90_SHAPE",
+      "L_SHAPE",
+      "T_270_SHAPE",
+      "T_90_SHAPE",
+      "T_SHAPE"
+    ],
+//All room types that have a left exit that can be used in generation
+//Valid types below
+    "LEFT": [
+      "4_WAY",
+      "DEAD_L",
+      "LINE",
+      "L_180_SHAPE",
+      "L_270_SHAPE",
+      "T_180_SHAPE",
+      "T_270_SHAPE",
+      "T_90_SHAPE"
+    ]
+  },
+//The target size for this layout
+  "maxSize": {
+    "x": 50,
+    "y": 50
+  }
+}

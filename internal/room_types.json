@@ -1,0 +1,66 @@
+{
+  "NONE" : {
+    "name" : "NONE",
+    "exits": []
+  },
+  "DEAD_U": {
+    "name" : "DEAD_U",
+    "exits": ["BOTTOM"]
+  },
+  "DEAD_D": {
+    "name" : "DEAD_D",
+    "exits": ["TOP"]
+  },
+  "DEAD_R": {
+    "name" : "DEAD_R",
+    "exits": ["RIGHT"]
+  },
+  "DEAD_L": {
+    "name" : "DEAD_L",
+    "exits": ["LEFT"]
+  },
+  "LINE": {
+    "name" : "LINE",
+    "exits": ["LEFT", "RIGHT"]
+  },
+  "I_SHAPE": {
+    "name" : "I_SHAPE",
+    "exits": ["TOP", "BOTTOM"]
+  },
+  "L_SHAPE": {
+    "name" : "L_SHAPE",
+    "exits": ["TOP", "RIGHT"]
+  },
+  "L_90_SHAPE": {
+    "name" : "L_90_SHAPE",
+    "exits": ["BOTTOM", "RIGHT"]
+  },
+  "L_180_SHAPE": {
+    "name" : "L_180_SHAPE",
+    "exits": ["BOTTOM", "LEFT"]
+  },
+  "L_270_SHAPE": {
+    "name" : "L_270_SHAPE",
+    "exits": ["TOP", "LEFT"]
+  },
+  "T_SHAPE": {
+    "name" : "T_SHAPE",
+    "exits": ["TOP", "BOTTOM", "RIGHT"]
+  },
+  "T_90_SHAPE": {
+    "name" : "T_90_SHAPE",
+    "exits": ["BOTTOM", "LEFT", "RIGHT"]
+  },
+  "T_180_SHAPE": {
+    "name" : "T_180_SHAPE",
+    "exits": ["TOP", "BOTTOM", "LEFT"]
+  },
+  "T_270_SHAPE": {
+    "name" : "T_270_SHAPE",
+    "exits": ["TOP", "LEFT", "RIGHT"]
+  },
+  "4_WAY": {
+    "name" : "4_WAY",
+    "exits": ["TOP", "BOTTOM", "LEFT", "RIGHT"]
+  }
+}
