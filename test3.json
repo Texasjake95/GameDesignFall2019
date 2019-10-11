@@ -25,7 +25,7 @@
     ],
     "RIGHT": [
       "4_WAY",
-      "DEAD_R",
+      "DEAD_L",
       "LINE",
       "L_SHAPE",
       "L_270_SHAPE",
@@ -35,7 +35,10 @@
     ],
     "LEFT": [
       "4_WAY",
-      "DEAD_L",
+      {
+        "type": "DEAD_R",
+        "weight": 100
+      },
       "LINE",
       "L_90_SHAPE",
       "L_180_SHAPE",

@@ -21,7 +21,7 @@ func _ready():
 	array.add("3", 3)
 	array.add("4", 4)
 	
-	for i in range(10):
-		print(array.shuffle())
+	for i in array:
+		print(i)
 	
 	add_child(generated)

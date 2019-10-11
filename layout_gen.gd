@@ -111,7 +111,29 @@ func load_layout(fileLoc) -> Layout:
 	var maxSizeData = layoutData["maxSize"]
 	var maxSize = Vector2(maxSizeData["x"], maxSizeData["y"])
 
-	var roomGroups = layoutData["roomGroups"]
+	var roomGroupsData = layoutData["roomGroups"]
+	var roomGroups = Dictionary()
+	
+	for key in roomGroupsData.keys():
+		var groupData = roomGroupsData[key]
+		var array = util.WeightedArray.new()
+		for roomData in groupData:
+			var roomType = ""
+			var weight = 1
+			
+			if roomData is String:
+				roomType = roomData
+				
+			if roomData is Dictionary:
+				roomType = roomData["type"]
+				if roomData.has("weight"):
+					weight = roomData["weight"]
+
+					
+			array.add(roomType, weight)
+			
+		roomGroups[key] = array
+		
 	layout.init(maxSize, roomGroups)
 	
 	var errors = 0
@@ -183,7 +205,7 @@ func generate_layout(layout : Layout, ranSeed=null) -> LayoutMap:
 	var neededRooms = Dictionary()
 	
 	var time_before = OS.get_ticks_usec()
-	_set_room(map, Vector2(0, 0), roomTypes[util.get_random(layout.roomGroups["START"])], neededRooms)
+	_set_room(map, Vector2(0, 0), roomTypes[layout.roomGroups["START"].getRandom()], neededRooms)
 	
 	#Needed Rooms need to be empty inorder for generation to be successful
 	while neededRooms.size() > 0:
@@ -254,9 +276,9 @@ func _trySetGroup(currentLayout: LayoutMap, group: String, pos: Vector2, layout:
 	return _trySetArray(currentLayout, layout.roomGroups[group], pos, neededRooms, true)
 
 #Try to set a room from the provided types at position
-func _trySetArray(currentLayout: LayoutMap, roomNames : Array, pos: Vector2, neededRooms: Dictionary, shuffle : bool) -> bool:
+func _trySetArray(currentLayout: LayoutMap, roomNames, pos: Vector2, neededRooms: Dictionary, shuffle : bool) -> bool:
 	if shuffle:
-		roomNames.shuffle()
+		roomNames = roomNames.shuffle()
 		
 	debug("Finding tile for: " + str(pos))
 	#Iterate through all rooms as the first one might not be able to set

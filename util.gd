@@ -23,7 +23,10 @@ class WeightedArray:
 	var array = []
 	var totalWeight = 0
 	
-	func add(object, weight=1):
+	func add(object, weight:int=1):
+		
+		assert(weight > 0)
+		
 		array.append(WeightedObject.new(object, weight))
 		totalWeight += weight
 		array.sort_custom(WeightedObject, "compare")
@@ -50,7 +53,6 @@ class WeightedArray:
 		var indecies = range(array.size())
 
 		while indecies.size() > 0:
-
 			var rand = randi() % tW
 			var i = 0
 			
@@ -65,6 +67,22 @@ class WeightedArray:
 			indecies.remove(i)
 			
 		return result
+	
+	func size():
+		return array.size()
+	
+	var current = 0
+	
+	func _iter_init(arg):
+		current = 0
+		return current < array.size()
+	
+	func _iter_next(arg):
+		current += 1
+		return current < array.size()
+	
+	func _iter_get(arg):
+		return array[current].object
 	
 class WeightedObject:
 	var object

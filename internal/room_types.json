@@ -11,12 +11,12 @@
     "name" : "DEAD_D",
     "exits": ["TOP"]
   },
-  "DEAD_R": {
-    "name" : "DEAD_R",
-    "exits": ["RIGHT"]
-  },
   "DEAD_L": {
     "name" : "DEAD_L",
+    "exits": ["RIGHT"]
+  },
+  "DEAD_R": {
+    "name" : "DEAD_R",
     "exits": ["LEFT"]
   },
   "LINE": {
