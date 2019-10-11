@@ -1,4 +1,4 @@
-extends Node
+extends BaseCollisionManager
 
 var validDirs = []
 # Declare member variables here. Examples:
@@ -12,9 +12,9 @@ func _ready():
 		for y in range(-1, 2):
 			validDirs.push_back(Vector2(x, y))
 	
-	print(validDirs)
 	addMapping(KinematicBody2D, "wall", funcref(self, "wallHandle"))
 	addMapping(KinematicBody2D, "column", funcref(self, "wallHandle"))
+
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
@@ -22,55 +22,32 @@ func _ready():
 
 func wallHandle(entity, tileData: TileData, collisionData : KinematicCollision2D):
 	tileData.setCell(-1)
-	
-
-const collisionMappping = Dictionary()
-
-#param 2 tileName?
-static func addMapping(clazz1, clazz2, function : FuncRef):
-
-	var key = [clazz1, clazz2]
-	
-	if not collisionMappping.has(key):
-		collisionMappping[key] = function
-		
-func _check(node):
-	return not is_instance_valid(node) || node.is_queued_for_deletion()
-	
-func handleCollision(entity, tile: TileData, collisionData : KinematicCollision2D) -> bool:
-	
-	if not entity || not tile:
-		return false
-	 
-	# Sometimes moveAndSlide does the same node several times if it was removed
-	# at any point do not interact again
-	if _check(entity) || tile.notValid():
-		return false
-	
-	var function = null
-	
-	for key in collisionMappping:
-		
-		var entity1Valid = false
-		var entity2Valid = false
-		
-		for type in key:
-			
-			if type is String:
-				entity2Valid = tile.sameTile(type)
-			elif entity is type:
-				entity1Valid = true
-		
-		if entity1Valid and entity2Valid:
-			function = collisionMappping.get(key)
-			break
-	
-	if not function:
-		return false
-	
-	function.call_func(entity, tile, collisionData)
 	return true
+	
+	
+func _check(entity):
+	
+	if entity is TileData:
+		return entity.notValid()
+		
+	return ._check(entity)
 
+func _entities_valid(key, entity, tile):
+	
+	var tileType = ""
+	var entityType = null
+	
+	#Find the string in the array 
+	#to compare the tile properly
+	if key[0] is String:
+		tileType = key[0]
+		entityType = key[1]
+	else:
+		tileType = key[1]
+		entityType = key[0]
+	
+	return tile.sameTile(tileType) and entity is entityType
+	
 	
 func newData(entity, tileMap: TileMap, collisionData : KinematicCollision2D):
 	var ret = TileData.new()
@@ -92,7 +69,7 @@ class TileData:
 		var dist = tileMap.cell_size.length_squared() * 1000
 		var tile = Vector2(0,0)
 		
-		for v in tile_manager.validDirs:
+		for v in collision_manager.tile_manager.validDirs:
 			
 			var tilePos = currentTile + v
 			
