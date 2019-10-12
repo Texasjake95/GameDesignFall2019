@@ -1,16 +1,16 @@
 {
-  "types" : ["4_WAY"],
-  "base_type" : "4_WAY",
+  "types" : ["L_SHAPE", "L_90_SHAPE", "L_180_SHAPE", "L_270_SHAPE"],
+  "base_type" : "L_SHAPE",
   "layout" : [
     "xxx   xxx",
     "x       x",
     "x       x",
-    "   PPP   ",
-    "   PPP   ",
-    "   PPP   ",
+    "x  PPP   ",
+    "x  PPP   ",
+    "x  PPP   ",
     "x       x",
     "x       x",
-    "xxx   xxx"
+    "xxxxxxxxx"
   ],
   "keys" : {
     "x" : [

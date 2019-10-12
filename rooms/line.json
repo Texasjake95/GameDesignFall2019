@@ -1,8 +1,8 @@
 {
-  "types" : ["4_WAY"],
-  "base_type" : "4_WAY",
+  "types" : ["LINE", "I_SHAPE"],
+  "base_type" : "LINE",
   "layout" : [
-    "xxx   xxx",
+    "xxxxxxxxx",
     "x       x",
     "x       x",
     "   PPP   ",
@@ -10,7 +10,7 @@
     "   PPP   ",
     "x       x",
     "x       x",
-    "xxx   xxx"
+    "xxxxxxxxx"
   ],
   "keys" : {
     "x" : [

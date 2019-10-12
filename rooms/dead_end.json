@@ -1,13 +1,13 @@
 {
-  "types" : ["4_WAY"],
-  "base_type" : "4_WAY",
+  "types" : ["DEAD_U", "DEAD_D", "DEAD_R", "DEAD_L"],
+  "base_type" : "DEAD_U",
   "layout" : [
-    "xxx   xxx",
+    "xxxxxxxxx",
     "x       x",
     "x       x",
-    "   PPP   ",
-    "   PPP   ",
-    "   PPP   ",
+    "x  PPP  x",
+    "x  PPP  x",
+    "x  PPP  x",
     "x       x",
     "x       x",
     "xxx   xxx"

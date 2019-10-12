@@ -127,7 +127,6 @@ func load_layout(fileLoc) -> Layout:
 			if roomData is Dictionary:
 				roomType = roomData["type"]
 				weight = util.get_or_default(roomData, "weight", 1)
-
 					
 			array.add(roomType, weight)
 			
@@ -146,6 +145,39 @@ func load_layout(fileLoc) -> Layout:
 	assert(errors == 0)
 	
 	return layout
+
+func populate(layoutMap: LayoutMap, tileSet: TileSet):
+	var walls = TileMap.new()
+	var floors = TileMap.new()
+
+	var rooms = layoutMap.get_used_cells()
+	
+	for roomPos in rooms:
+		
+		#TODO Randomize here based off of the layoutMap seed and roomPos
+		
+		var roomType = layoutMap.get_room_typev(roomPos)
+		var center = Vector2(roomPos.x * 10, roomPos.y * 10)
+		var room = room_manager.get_room(roomType.name)
+		for x in range(-4, 5):
+			for y in range(-4, 5):
+				var pos = Vector2(x, y)
+				var tilePos = pos + center
+				var tileData = room.get_tile(pos)
+				
+				#tileSet.find_tile_by_name(tileData.wallTile)
+				#tileSet.find_tile_by_name(tileData.floorTile)
+				
+				if tileData.wallTile == "wall":
+					walls.set_cellv(tilePos, FOUR_WAY.opcode)
+				if tileData.floorTile == "base":
+					floors.set_cellv(tilePos, DEAD_U.opcode)
+				if tileData.floorTile == "base2":
+					floors.set_cellv(tilePos, DEAD_R.opcode)
+				if tileData.floorTile == "pit":
+					floors.set_cellv(tilePos, NONE.opcode)
+					
+	return [floors, walls]
 
 func _check_group(groupName, layout, bit) -> int:
 	

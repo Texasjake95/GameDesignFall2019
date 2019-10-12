@@ -10,7 +10,7 @@ func _ready():
 	add_child(_tile_helper)
 	
 	loadRooms("res://rooms")
-	print(roomDataLookup)
+
 	#ALL of these are most likely backwards... need to test and see
 	#Easy fix just change which is which here
 	var reverse90 = mapper90

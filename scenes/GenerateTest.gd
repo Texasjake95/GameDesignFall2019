@@ -15,23 +15,13 @@ func _ready():
 	generated.set_tileset(tile_set)
 	generated.set_cell_size(Vector2(30,30))
 	
-	add_child(generated)
+	var array = layout_gen.populate(generated, null) 
+	var floors = array[0]
+	floors.set_tileset(tile_set)
+	floors.set_cell_size(Vector2(30,30))
 	
-	var room = layout_gen.room_manager.get_room("4_WAY")
-	
-	for y in range(-4, 5):
-		var toPrint = ""
-		for x in range(-4, 5):
-			var pos = Vector2(x, y)
-			var tileData = room.get_tile(pos)
-			if tileData.wallTile == "none":
-				if tileData.floorTile == "base":
-					toPrint += "1"
-				elif tileData.floorTile == "base2":
-					toPrint += "2"
-				else:
-					toPrint += "P"
-			else:
-				toPrint += tileData.wallTile[0]
-		print(toPrint)
-	
+	var walls = array[1]
+	walls.set_tileset(tile_set)
+	walls.set_cell_size(Vector2(30,30))
+	add_child(floors)
+	add_child(walls)

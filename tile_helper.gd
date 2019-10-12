@@ -40,7 +40,6 @@ func _get_weighted_tile_array(arrayData):
 	return ret
 	
 func get_tile_provider(providerData):
-	print(providerData)
 	var type = providerData["type"]
 	
 	if type == "single":
