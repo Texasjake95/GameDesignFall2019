@@ -13,7 +13,14 @@ static func loadJson(fileLoc):
 	
 static func check(opcode : int, bit : int):
 	return (opcode & bit) == bit
+
+static func get_or_default(dict, key, defaultValue):
 	
+	if not dict.has(key):
+		return defaultValue
+	
+	return dict[key]
+
 #Get a random element in the given array	
 static func get_random(array: Array):
 	array.shuffle()

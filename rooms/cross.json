@@ -2,15 +2,15 @@
   "types" : ["4_WAY"],
   "base_type" : "4_WAY",
   "layout" : [
-    ["xxx   xxx"],
-    ["x       x"],
-    ["x       x"],
-    ["   PPP   "],
-    ["   PPP   "],
-    ["   PPP   "],
-    ["x       x"],
-    ["x       x"],
-    ["xxx   xxx"]
+    "xxx   xxx",
+    "x       x",
+    "x       x",
+    "   PPP   ",
+    "   PPP   ",
+    "   PPP   ",
+    "x       x",
+    "x       x",
+    "xxx   xxx"
   ],
   "keys" : {
     "x" : [
@@ -49,8 +49,7 @@
     ],
     "P": [
       {
-        "tiles":
-        [
+        "tiles": [
           {
             "floor": "base",
             "wall" : "none",
@@ -64,6 +63,16 @@
         ],
         "type": "single",
         "weight": 10
+      },
+      {
+        "tiles": [
+          {
+            "floor": "pit",
+            "wall" : "none",
+            "entity" : "none"
+          }
+        ],
+        "type": "single",
       }
     ]
   }

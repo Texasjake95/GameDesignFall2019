@@ -6,7 +6,11 @@ extends Node
 class_name RoomManager
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	_tile_helper = load("res://tile_helper.gd").new()
+	add_child(_tile_helper)
+	
 	loadRooms("res://rooms")
+	print(roomDataLookup)
 	#ALL of these are most likely backwards... need to test and see
 	#Easy fix just change which is which here
 	var reverse90 = mapper90
@@ -67,9 +71,12 @@ func _ready():
 	_add_rotation("T_270_SHAPE", "T_90_SHAPE", reverse180)
 	_add_rotation("T_270_SHAPE", "T_180_SHAPE", reverse270)
 	
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass
+
+var _tile_helper: TileHelper
 
 var rotation_lookup = Dictionary()
 
@@ -91,12 +98,13 @@ func _get_rotation(startType, endType):
 	return rotation_lookup[startType][endType]	
 
 func get_room(roomType):
-	var room = null #TODO get room
+	var room = util.get_random(roomDataLookup[roomType]) #TODO get room
 	return _get_provider(room, roomType)
 	
-func _get_provider(room: Room, requestedType):
-	var roomType = room.get_type()
+func _get_provider(roomData: RoomData, requestedType):
+	var roomType = roomData.get_type()
 	var rotation = _get_rotation(roomType, requestedType)
+	var room = Room.new(roomData)
 	
 	return RoomProvider.new(room, rotation)
 
@@ -105,6 +113,7 @@ var mapper = funcref(self, "_with_no_degree")
 var mapper90 = funcref(self, "_with_90_degree")
 var mapper180 = funcref(self, "_with_180_degree")
 var mapper270 = funcref(self, "_with_270_degree")
+var roomDataLookup = Dictionary()
 
 #These are written like this so that there are not 4 multiplications happening every call
 #with approximately 81 call PER room it get very expensive very fast 
@@ -144,13 +153,29 @@ func loadRooms(directory):
 
 func loadRoom(fileLoc):
 	
-	if true:
-		print(fileLoc)
-		return
-	
 	var roomJson = util.loadJson(fileLoc)
 	
-	pass
+	var types = roomJson["types"]
+	var base_type = roomJson["base_type"]
+	var layout = roomJson["layout"]
+	var keysData = roomJson["keys"]
+	var keys = Dictionary()
+	
+	for key in keysData.keys():
+		var array = keysData[key]
+		var weightedArray = util.WeightedArray.new()
+		for providerData in array:
+			var tileProvider = _tile_helper.get_tile_provider(providerData)
+			var weight = util.get_or_default(providerData, "weight", 1)
+			weightedArray.add(tileProvider, weight)
+		
+		keys[key] = weightedArray
+	
+	var roomData = RoomData.new(base_type, types, layout, keys)
+	for type in types:
+		if not roomDataLookup.has(type):
+			roomDataLookup[type] = []
+		roomDataLookup[type].push_back(roomData)
 
 
 #Rooms can be rotated inorder to fit several types 
@@ -168,17 +193,38 @@ class RoomProvider:
 			pos = mapper.call_func(pos)
 		
 		return room.get_tile(pos)
-		
+
 class Room:
+	const xOffset = 4
+	const yOffset = 4
+	
+	var layout
+	var keys = Dictionary()
+	
+	func _init(roomData):
+		self.layout = roomData.layout
+		for key in roomData.keys.keys():
+			self.keys[key] = roomData.keys[key].getRandom()
+			
+	func get_tile(pos: Vector2):
+		var layoutPos = Vector2(pos.x + xOffset, pos.y + yOffset)
+		var key = layout[layoutPos.y]
+		key = key[layoutPos.x]
+		return keys[key].getTileData()
+		
+		
+class RoomData:
 	var baseType
 	var validTypes
-
-	func _init(baseType, validTypes):
+	var layout
+	var keys
+	
+	func _init(baseType, validTypes, layout, keys):
 		self.baseType = baseType
 		self.validTypes = validTypes
+		self.layout = layout
+		self.keys = keys
 	
 	func get_type():
 		return baseType;
 	
-	func get_tile(pos: Vector2):
-		pass
