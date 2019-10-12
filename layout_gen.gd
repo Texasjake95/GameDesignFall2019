@@ -126,8 +126,7 @@ func load_layout(fileLoc) -> Layout:
 				
 			if roomData is Dictionary:
 				roomType = roomData["type"]
-				if roomData.has("weight"):
-					weight = roomData["weight"]
+				weight = util.get_or_default(roomData, "weight", 1)
 
 					
 			array.add(roomType, weight)
